@@ -1,7 +1,10 @@
 # Softplan-TasksAPI
 
 ## Description
-Simples API to list Softplan tasks
+Simple API to list Softplan tasks
 
 ## Info
+
 PHP Backend: https://www.php.net/
+
+React Frontend: https://react.dev/
