@@ -1,2 +1,5 @@
 # vendor dir
 /vendor
+
+# env file
+.env
