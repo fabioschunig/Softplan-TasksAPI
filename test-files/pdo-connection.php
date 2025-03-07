@@ -1,10 +1,18 @@
 <?php
 
+use SoftplanTasksApi\Application\Config\ConfigAppEnvFile;
+
 require_once 'vendor/autoload.php';
 
+$config = new ConfigAppEnvFile;
+$config->loadEnv();
+var_dump($config);
+
 $pdoConnection = \SoftplanTasksApi\Infrastructure\Persistence\PdoConnectionCreator::createConnection(
-    '127.0.0.1',
-    'task_rest_api',
+    $config->host,
+    $config->dbname,
+    $config->username,
+    $config->password,
 );
 
 $status = $pdoConnection->getAttribute(PDO::ATTR_CONNECTION_STATUS);
