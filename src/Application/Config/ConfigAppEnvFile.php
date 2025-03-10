@@ -8,10 +8,10 @@ class ConfigAppEnvFile implements ConfigApp
 {
     private string $envFile = (__DIR__ . '/.env');
 
-    public readonly string $host;
-    public readonly string $dbname;
-    public readonly string $username;
-    public readonly string $password;
+    private string $host = '';
+    private string $dbname = '';
+    private string $username = '';
+    private string $password = '';
 
     public function loadEnv()
     {
@@ -40,5 +40,25 @@ class ConfigAppEnvFile implements ConfigApp
         $this->dbname = $env['DB_DBNAME'] ?? '';
         $this->username = $env['DB_USERNAME'] ?? '';
         $this->password = $env['DB_PASSWORD'] ?? '';
+    }
+
+    public function getHost(): string
+    {
+        return $this->host;
+    }
+
+    public function getDBName(): string
+    {
+        return $this->dbname;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
     }
 }
