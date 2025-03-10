@@ -14,3 +14,7 @@ $taskRepository = new PdoTaskRepository();
 $tasks = $taskRepository->allTasks();
 echo "All Tasks: \n";
 var_dump($tasks);
+
+$searchTasks = $taskRepository->searchTasks(null, null, null);
+echo "Search Tasks: \n";
+var_dump($searchTasks);
