@@ -9,7 +9,7 @@ include_once 'pdo-connection.php';
 echo "Connection: \n";
 var_dump($pdoConnection);
 
-$taskRepository = new PdoTaskRepository();
+$taskRepository = new PdoTaskRepository($pdoConnection);
 
 $tasks = $taskRepository->allTasks();
 echo "All Tasks: \n";
