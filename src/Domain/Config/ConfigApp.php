@@ -10,4 +10,7 @@ interface ConfigApp
     public function getDBName(): string;
     public function getUsername(): string;
     public function getPassword(): string;
+
+    public function getResponsavel(): int;
+    public function getProjeto(): int;
 }
