@@ -9,10 +9,22 @@ use PDO;
 class PdoTaskRepository implements TaskRepository
 {
     private PDO $connection;
+    private int $responsavel = 0;
+    private int $projeto = 0;
 
-    public function __construct(PDO $connection)
+    public function __construct(PDO $connection, int $responsavel, int $projeto)
     {
         $this->connection = $connection;
+
+        $this->responsavel = $responsavel;
+        if ($this->responsavel <= 0) {
+            throw new \Exception("Obrigatório informar um responsável pelas tarefas");
+        }
+
+        $this->projeto = $projeto;
+        if ($this->projeto <= 0) {
+            throw new \Exception("Obrigatório informar um projeto para selecionar tarefas");
+        }
     }
 
     public function allTasks(): array
