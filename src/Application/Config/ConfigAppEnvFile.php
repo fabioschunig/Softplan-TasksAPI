@@ -44,8 +44,8 @@ class ConfigAppEnvFile implements ConfigApp
         $this->username = $env['DB_USERNAME'] ?? '';
         $this->password = $env['DB_PASSWORD'] ?? '';
 
-        $this->password = $env['TASK_RESPONSAVEL'] ?? 0;
-        $this->password = $env['TASK_PROJETO'] ?? 0;
+        $this->responsavel = $env['TASK_RESPONSAVEL'] ?? 0;
+        $this->projeto = $env['TASK_PROJETO'] ?? 0;
     }
 
     public function getHost(): string
