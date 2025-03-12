@@ -75,9 +75,9 @@ class PdoTaskRepository implements TaskRepository
             $task = new Task(
                 $taskData['id'],
                 $taskData['descricao'],
-                $taskData['referencia'] ? null : new \DateTime($taskData['referencia']),
-                $taskData['inicio'] ? null : new \DateTime($taskData['inicio']),
-                $taskData['fim'] ? null : new \DateTime($taskData['fim']),
+                $taskData['referencia'] == null ? null : new \DateTime($taskData['referencia']),
+                $taskData['inicio'] == null ? null : new \DateTime($taskData['inicio']),
+                $taskData['fim']  == null ? null : new \DateTime($taskData['fim']),
                 $taskData['observacao'],
                 $taskData['origem'],
             );
