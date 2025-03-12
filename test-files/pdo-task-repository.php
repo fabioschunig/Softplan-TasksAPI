@@ -18,7 +18,13 @@ $taskRepository = new PdoTaskRepository(
 $tasks = $taskRepository->allTasks();
 echo "All Tasks: \n";
 var_dump($tasks);
+echo "End - All Tasks \n";
 
-$searchTasks = $taskRepository->searchTasks(null, null, null);
+$searchTasks = $taskRepository->searchTasks(
+    'cliente',
+    new \DateTime('2021-08-25'),
+    new \DateTime('2021-08-28'),
+);
 echo "Search Tasks: \n";
 var_dump($searchTasks);
+echo "End - Search Tasks \n";
