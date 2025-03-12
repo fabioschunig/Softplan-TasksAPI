@@ -29,12 +29,48 @@ class PdoTaskRepository implements TaskRepository
 
     public function allTasks(): array
     {
-        $sqlQuery = 'SELECT * FROM tarefa;';
-        $stmt = $this->connection->query($sqlQuery);
+        return $this->searchTasks(null, null, null);
+    }
 
+    public function searchTasks(string|null $searchText, \DateTime|null $startDate, \DateTime|null $endDate): array
+    {
+        $sqlQuery = "SELECT * FROM tarefa WHERE responsavel = :responsavel AND projeto = :projeto";
+
+        if ($searchText) {
+            $sqlQuery .= " AND descricao like :searchText";
+        }
+
+        if ($startDate) {
+            $sqlQuery .= " AND inicio >= :startDate";
+        }
+
+        if ($endDate) {
+            $sqlQuery .= " AND fim <= :endDate";
+        }
+
+        $stmt = $this->connection->prepare($sqlQuery);
+        $stmt->bindParam('responsavel', $this->responsavel);
+        $stmt->bindParam('projeto', $this->projeto);
+
+        if ($searchText) {
+            $textLike = ('%' . $searchText . '%');
+            $stmt->bindParam('searchText', $textLike);
+        }
+
+        if ($startDate) {
+            $startDateFormat = $startDate->format('Y-m-d');
+            $stmt->bindParam('startDate', $startDateFormat);
+        }
+
+        if ($endDate) {
+            $endDateFormat = $endDate->format('Y-m-d');
+            $stmt->bindParam('endDate', $endDateFormat);
+        }
+
+        $stmt->execute();
         $taskDataList = $stmt->fetchAll();
-        $taskList = [];
 
+        $taskList = [];
         foreach ($taskDataList as $taskData) {
             $task = new Task(
                 $taskData['id'],
@@ -50,10 +86,5 @@ class PdoTaskRepository implements TaskRepository
         }
 
         return $taskList;
-    }
-
-    public function searchTasks(string|null $searchText, \DateTime|null $startDate, \DateTime|null $endDate): array
-    {
-        return array();
     }
 }
