@@ -6,7 +6,7 @@ use SoftplanTasksApi\Domain\Config\ConfigApp;
 
 class ConfigAppEnvFile implements ConfigApp
 {
-    private string $envFile = (__DIR__ . '/.env');
+    private string $envFile = (__DIR__ . '/../../../../config/.env');
 
     private string $host = '';
     private string $dbname = '';
