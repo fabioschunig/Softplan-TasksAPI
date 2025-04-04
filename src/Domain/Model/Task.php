@@ -5,28 +5,34 @@ namespace SoftplanTasksApi\Domain\Model;
 class Task
 {
     public readonly int $id;
-    public readonly string $descricao;
-    public readonly \DateTime|null $referencia;
-    public readonly \DateTime|null $inicio;
-    public readonly \DateTime|null $fim;
-    public readonly string|null $observacao;
-    public readonly string|null $origem;
+    public readonly string $description;
+    public readonly string|null $tags;
+    public readonly int|null $projectId;
+    public readonly \DateTime|null $started;
+    public readonly \DateTime|null $finished;
+    public readonly int $status;
+    public readonly \DateTime|null $created;
+    public readonly \DateTime|null $updated;
 
     public function __construct(
         int $id,
-        string $descricao,
-        \DateTime|null $referencia,
-        \DateTime|null $inicio,
-        \DateTime|null $fim,
-        string|null $observacao,
-        string|null $origem
+        string $description,
+        string|null $tags,
+        int|null $projectId,
+        \DateTime|null $started,
+        \DateTime|null $finished,
+        int $status,
+        \DateTime|null $created,
+        \DateTime|null $updated,
     ) {
         $this->id = $id;
-        $this->descricao = $descricao;
-        $this->referencia = $referencia;
-        $this->inicio = $inicio;
-        $this->fim = $fim;
-        $this->observacao = $observacao;
-        $this->origem = $origem;
+        $this->description = $description;
+        $this->tags = $tags;
+        $this->projectId = $projectId;
+        $this->started = $started;
+        $this->finished = $finished;
+        $this->status = $status;
+        $this->created = $created;
+        $this->updated = $updated;
     }
 }
