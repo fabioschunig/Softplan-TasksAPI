@@ -9,17 +9,11 @@ use PDO;
 class PdoTaskRepository implements TaskRepository
 {
     private PDO $connection;
-    private int $responsavel = 0;
     private int $projeto = 0;
 
-    public function __construct(PDO $connection, int $responsavel, int $projeto)
+    public function __construct(PDO $connection, int $projeto)
     {
         $this->connection = $connection;
-
-        $this->responsavel = $responsavel;
-        if ($this->responsavel <= 0) {
-            throw new \Exception("Obrigatório informar um responsável pelas tarefas");
-        }
 
         $this->projeto = $projeto;
         if ($this->projeto <= 0) {
@@ -34,7 +28,7 @@ class PdoTaskRepository implements TaskRepository
 
     public function searchTasks(string|null $searchText, \DateTime|null $startDate, \DateTime|null $endDate): array
     {
-        $sqlQuery = "SELECT * FROM tarefa WHERE responsavel = :responsavel AND projeto = :projeto";
+        $sqlQuery = "SELECT * FROM tarefa WHERE projeto = :projeto";
 
         if ($searchText) {
             $sqlQuery .= " AND descricao like :searchText";
@@ -49,7 +43,6 @@ class PdoTaskRepository implements TaskRepository
         }
 
         $stmt = $this->connection->prepare($sqlQuery);
-        $stmt->bindParam('responsavel', $this->responsavel);
         $stmt->bindParam('projeto', $this->projeto);
 
         if ($searchText) {

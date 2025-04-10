@@ -11,7 +11,6 @@ var_dump($pdoConnection);
 
 $taskRepository = new PdoTaskRepository(
     $pdoConnection,
-    $config->getResponsavel(),
     $config->getProjeto(),
 );
 

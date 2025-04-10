@@ -13,7 +13,6 @@ class ConfigAppEnvFile implements ConfigApp
     private string $username = '';
     private string $password = '';
 
-    private int $responsavel = 0;
     private int $projeto = 0;
 
     public function loadEnv()
@@ -44,7 +43,6 @@ class ConfigAppEnvFile implements ConfigApp
         $this->username = $env['DB_USERNAME'] ?? '';
         $this->password = $env['DB_PASSWORD'] ?? '';
 
-        $this->responsavel = $env['TASK_RESPONSAVEL'] ?? 0;
         $this->projeto = $env['TASK_PROJETO'] ?? 0;
     }
 
@@ -66,11 +64,6 @@ class ConfigAppEnvFile implements ConfigApp
     public function getPassword(): string
     {
         return $this->password;
-    }
-
-    public function getResponsavel(): int
-    {
-        return $this->responsavel;
     }
 
     public function getProjeto(): int

@@ -11,6 +11,5 @@ interface ConfigApp
     public function getUsername(): string;
     public function getPassword(): string;
 
-    public function getResponsavel(): int;
     public function getProjeto(): int;
 }
