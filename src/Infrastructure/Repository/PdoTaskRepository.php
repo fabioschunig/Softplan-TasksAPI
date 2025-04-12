@@ -9,16 +9,9 @@ use PDO;
 class PdoTaskRepository implements TaskRepository
 {
     private PDO $connection;
-    private int $projeto = 0;
-
-    public function __construct(PDO $connection, int $projeto)
+    public function __construct(PDO $connection)
     {
         $this->connection = $connection;
-
-        $this->projeto = $projeto;
-        if ($this->projeto <= 0) {
-            throw new \Exception("Obrigatório informar um projeto para selecionar tarefas");
-        }
     }
 
     public function allTasks(): array
@@ -28,7 +21,7 @@ class PdoTaskRepository implements TaskRepository
 
     public function searchTasks(string|null $searchText, \DateTime|null $startDate, \DateTime|null $endDate): array
     {
-        $sqlQuery = "SELECT * FROM tarefa WHERE projeto = :projeto";
+        $sqlQuery = "SELECT * FROM tarefa";
 
         if ($searchText) {
             $sqlQuery .= " AND descricao like :searchText";
@@ -43,7 +36,6 @@ class PdoTaskRepository implements TaskRepository
         }
 
         $stmt = $this->connection->prepare($sqlQuery);
-        $stmt->bindParam('projeto', $this->projeto);
 
         if ($searchText) {
             $textLike = ('%' . $searchText . '%');

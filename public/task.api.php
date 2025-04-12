@@ -17,7 +17,6 @@ $pdoConnection = \SoftplanTasksApi\Infrastructure\Persistence\PdoConnectionCreat
 
 $taskRepository = new PdoTaskRepository(
     $pdoConnection,
-    $config->getProjeto(),
 );
 
 $tasks = $taskRepository->allTasks();
