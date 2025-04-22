@@ -21,18 +21,18 @@ class PdoTaskRepository implements TaskRepository
 
     public function searchTasks(string|null $searchText, \DateTime|null $startDate, \DateTime|null $endDate): array
     {
-        $sqlQuery = "SELECT * FROM tarefa";
+        $sqlQuery = "SELECT * FROM task";
 
         if ($searchText) {
-            $sqlQuery .= " AND descricao like :searchText";
+            $sqlQuery .= " AND description like :searchText";
         }
 
         if ($startDate) {
-            $sqlQuery .= " AND inicio >= :startDate";
+            $sqlQuery .= " AND started >= :startDate";
         }
 
         if ($endDate) {
-            $sqlQuery .= " AND fim <= :endDate";
+            $sqlQuery .= " AND finished <= :endDate";
         }
 
         $stmt = $this->connection->prepare($sqlQuery);
@@ -59,12 +59,14 @@ class PdoTaskRepository implements TaskRepository
         foreach ($taskDataList as $taskData) {
             $task = new Task(
                 $taskData['id'],
-                $taskData['descricao'],
-                $taskData['referencia'] == null ? null : new \DateTime($taskData['referencia']),
-                $taskData['inicio'] == null ? null : new \DateTime($taskData['inicio']),
-                $taskData['fim']  == null ? null : new \DateTime($taskData['fim']),
-                $taskData['observacao'],
-                $taskData['origem'],
+                $taskData['description'],
+                $taskData['tags'],
+                $taskData['project_id'],
+                $taskData['started'] == null ? null : new \DateTime($taskData['started']),
+                $taskData['finished']  == null ? null : new \DateTime($taskData['finished']),
+                $taskData['status'],
+                $taskData['created'] == null ? null : new \DateTime($taskData['created']),
+                $taskData['updated']  == null ? null : new \DateTime($taskData['updated']),
             );
 
             $taskList[] = $task;
