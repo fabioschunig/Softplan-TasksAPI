@@ -5,10 +5,12 @@ namespace SoftplanTasksApi\Infrastructure\Repository;
 use SoftplanTasksApi\Domain\Repository\TaskRepository;
 use SoftplanTasksApi\Domain\Model\Task;
 use PDO;
+use DateTime;
 
 class PdoTaskRepository implements TaskRepository
 {
     private PDO $connection;
+
     public function __construct(PDO $connection)
     {
         $this->connection = $connection;
@@ -21,8 +23,8 @@ class PdoTaskRepository implements TaskRepository
 
     public function searchTasks(
         string|null $searchText,
-        \DateTime|null $startDate,
-        \DateTime|null $endDate
+        DateTime|null $startDate,
+        DateTime|null $endDate
     ): array {
         $sqlQuery = "SELECT * FROM task WHERE 1=1";
 
@@ -65,11 +67,11 @@ class PdoTaskRepository implements TaskRepository
                 $taskData['description'],
                 $taskData['tags'],
                 $taskData['project_id'],
-                $taskData['started'] == null ? null : new \DateTime($taskData['started']),
-                $taskData['finished']  == null ? null : new \DateTime($taskData['finished']),
+                $taskData['started'] == null ? null : new DateTime($taskData['started']),
+                $taskData['finished']  == null ? null : new DateTime($taskData['finished']),
                 $taskData['status'],
-                $taskData['created'] == null ? null : new \DateTime($taskData['created']),
-                $taskData['updated']  == null ? null : new \DateTime($taskData['updated']),
+                $taskData['created'] == null ? null : new DateTime($taskData['created']),
+                $taskData['updated']  == null ? null : new DateTime($taskData['updated']),
             );
 
             $taskList[] = $task;
