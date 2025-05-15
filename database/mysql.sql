@@ -31,7 +31,7 @@ ALTER TABLE `task`
 
 CREATE TABLE `users` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(50) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE,
+  `username` VARCHAR(31) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE,
   `email` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE,
   `password_hash` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

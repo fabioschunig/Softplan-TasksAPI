@@ -59,6 +59,7 @@ const Login = ({ onLogin, onSwitchToRegister }) => {
               name="username"
               value={formData.username}
               onChange={handleChange}
+              maxLength="31"
               required
             />
           </div>

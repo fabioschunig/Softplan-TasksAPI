@@ -19,6 +19,10 @@ const Register = ({ onLogin, onSwitchToLogin }) => {
   };
 
   const validateForm = () => {
+    if (formData.username.length < 3 || formData.username.length > 31) {
+      setError('Username must be between 3 and 31 characters');
+      return false;
+    }
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return false;
@@ -86,6 +90,7 @@ const Register = ({ onLogin, onSwitchToLogin }) => {
               name="username"
               value={formData.username}
               onChange={handleChange}
+              maxLength="31"
               required
             />
           </div>

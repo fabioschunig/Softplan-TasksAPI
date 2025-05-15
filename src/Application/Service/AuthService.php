@@ -45,6 +45,11 @@ class AuthService
 
     public function register(string $username, string $email, string $password): array|null
     {
+        // Validate username length
+        if (strlen($username) > 31 || strlen($username) < 3) {
+            return null;
+        }
+
         // Check if user already exists
         if ($this->userRepository->findByUsername($username) || $this->userRepository->findByEmail($email)) {
             return null;
