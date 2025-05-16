@@ -6,7 +6,7 @@ use softplan_task_api;
 
 CREATE TABLE `project` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `description` VARCHAR(256) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -14,8 +14,8 @@ CREATE TABLE `project` (
 
 CREATE TABLE `task` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `description` VARCHAR(256) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tags` VARCHAR(256) COLLATE utf8mb4_unicode_ci NULL,
+  `description` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tags` VARCHAR(255) COLLATE utf8mb4_unicode_ci NULL,
   `project_id` INT UNSIGNED NULL,
   `started` TIMESTAMP NULL,
   `finished` TIMESTAMP NULL,
