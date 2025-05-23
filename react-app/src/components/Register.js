@@ -61,9 +61,21 @@ const Register = ({ onLogin, onSwitchToLogin }) => {
         })
       });
 
+      // Check if response is ok first
+      if (!response.ok) {
+        // Try to get error message from response
+        try {
+          const errorData = await response.json();
+          setError(errorData.error || `Server error: ${response.status}`);
+        } catch (jsonError) {
+          setError(`Server error: ${response.status} - ${response.statusText}`);
+        }
+        return;
+      }
+
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      if (data.success) {
         localStorage.setItem('authToken', data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
         onLogin(data.data);
@@ -71,7 +83,8 @@ const Register = ({ onLogin, onSwitchToLogin }) => {
         setError(data.error || 'Registration failed');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      console.error('Registration error:', err);
+      setError(`Network error: ${err.message}. Please check if the server is running.`);
     } finally {
       setLoading(false);
     }

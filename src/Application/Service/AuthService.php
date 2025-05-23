@@ -45,6 +45,7 @@ class AuthService
 
     public function register(string $username, string $email, string $password): array|null
     {
+        
         // Validate username length
         if (strlen($username) > 31 || strlen($username) < 3) {
             return null;
@@ -61,6 +62,7 @@ class AuthService
         }
 
         $passwordHash = User::hashPassword($password);
+
         $user = $this->userRepository->create($username, $email, $passwordHash);
 
         // Auto-login after registration

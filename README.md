@@ -16,6 +16,46 @@ Simple API to list Softplan tasks with user authentication system
 - **Database**: MySQL with PDO
 - **Security**: Argon2ID password hashing, session tokens
 
+## Quick Start
+
+### 1. Database Setup
+```bash
+# Create database and run SQL script
+mysql -u root -p < database/mysql.sql
+```
+
+### 2. Backend Setup
+```bash
+# Install PHP dependencies
+composer install
+
+# Configure environment (create config/.env file)
+cp config/.env.example config/.env
+# Edit config/.env with your database credentials
+
+# Start PHP server (port 8000)
+chmod +x start-server.sh
+./start-server.sh
+```
+
+### 3. Frontend Setup
+```bash
+# Navigate to React app
+cd react-app
+
+# Install dependencies
+npm install
+
+# Start React development server (port 3000)
+npm start
+```
+
+### 4. Access Application
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+
+The React app will automatically proxy API calls to the PHP server.
+
 ## API Endpoints
 
 ### Authentication
@@ -26,22 +66,6 @@ Simple API to list Softplan tasks with user authentication system
 
 ### Tasks (Protected)
 - `GET /task.api.php` - Get all tasks (requires authentication)
-
-## Setup
-
-### Database
-1. Run the SQL script in `database/mysql.sql` to create tables
-2. Configure database connection in `.env` file
-
-### Backend
-1. Install dependencies: `composer install`
-2. Configure environment variables in `config/.env`
-3. Serve from `public/` directory
-
-### Frontend
-1. Navigate to `react-app/` directory
-2. Install dependencies: `npm install`
-3. Start development server: `npm start`
 
 ## Authentication Flow
 
@@ -73,19 +97,50 @@ src/
     ├── Repository/     # PDO implementations
     ├── Middleware/     # Authentication middleware
     └── Persistence/    # Database connection
+
+react-app/
+├── src/
+│   ├── components/     # Login, Register, Dashboard
+│   ├── App.js         # Main application logic
+│   └── App.css        # Styles
+└── public/            # Static files
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **API Connection Error**: Make sure PHP server is running on port 8000
+2. **Database Connection**: Check config/.env file credentials
+3. **CORS Issues**: APIs include proper CORS headers
+4. **Port Conflicts**: Change ports in start-server.sh or package.json if needed
+
+### Development Commands
+
+```bash
+# Start PHP server manually
+cd public && php -S localhost:8000
+
+# Check PHP version (requires 8+)
+php --version
+
+# Install Composer dependencies
+composer install
+
+# React development server
+cd react-app && npm start
 ```
 
 ## Usage Examples
 
 ### Login Request
 ```bash
-curl -X POST http://localhost/auth.api.php?action=login \
+curl -X POST http://localhost:8000/auth.api.php?action=login \
   -H "Content-Type: application/json" \
   -d '{"username":"user","password":"password123"}'
 ```
 
 ### Access Protected Route
 ```bash
-curl -X GET http://localhost/task.api.php \
+curl -X GET http://localhost:8000/task.api.php \
   -H "Authorization: Bearer YOUR_TOKEN_HERE"
-```

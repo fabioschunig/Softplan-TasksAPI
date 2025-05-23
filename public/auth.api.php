@@ -27,6 +27,29 @@ $pdoConnection = \SoftplanTasksApi\Infrastructure\Persistence\PdoConnectionCreat
     $config->getPassword(),
 );
 
+// Validate database connection
+if (!$pdoConnection) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Database connection failed. Please check your database configuration.'
+    ]);
+    exit();
+}
+
+// Test the connection with a simple query
+try {
+    $pdoConnection->query('SELECT 1');
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Database connection failed: ' . $e->getMessage()
+    ]);
+    exit();
+}
+
+
 $userRepository = new PdoUserRepository($pdoConnection);
 $sessionRepository = new PdoSessionRepository($pdoConnection);
 $authService = new AuthService($userRepository, $sessionRepository);
@@ -67,8 +90,15 @@ try {
                         exit();
                     }
                     
-                    $result = $authService->register($input['username'], $input['email'], $input['password']);
+                    try {
+                        $result = $authService->register($input['username'], $input['email'], $input['password']);
+                    } catch (\Exception $e) {
+                        http_response_code(400);
+                        echo json_encode(['error' => $e->getMessage()]);
+                        exit();
+                    }
                     
+
                     if ($result) {
                         http_response_code(201);
                         echo json_encode([
