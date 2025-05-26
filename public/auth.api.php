@@ -7,6 +7,96 @@ use SoftplanTasksApi\Application\Service\AuthService;
 
 require_once '../vendor/autoload.php';
 
+// Disable HTML error output to prevent JSON corruption
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+ini_set('log_errors', 1);
+error_reporting(E_ALL);
+
+// Global error handler for non-fatal errors
+set_error_handler(function($severity, $message, $file, $line) {
+    $errorMessage = "PHP Error: $message in $file on line $line";
+    error_log("[ERROR] $errorMessage");
+    
+    if (!headers_sent()) {
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'error' => 'Internal server error occurred',
+            'timestamp' => date('Y-m-d H:i:s')
+        ]);
+    }
+    exit();
+});
+
+// Global exception handler
+set_exception_handler(function($exception) {
+    $errorMessage = "Uncaught Exception: " . $exception->getMessage() . " in " . $exception->getFile() . " on line " . $exception->getLine();
+    error_log("[EXCEPTION] $errorMessage");
+    
+    if (!headers_sent()) {
+        http_response_code(500);
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'error' => 'Internal server error occurred',
+            'timestamp' => date('Y-m-d H:i:s')
+        ]);
+    }
+    exit();
+});
+
+// Fatal error handler using output buffering
+register_shutdown_function(function() {
+    $error = error_get_last();
+    if ($error && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+        $errorMessage = "Fatal Error: {$error['message']} in {$error['file']} on line {$error['line']}";
+        error_log("[FATAL] $errorMessage");
+        
+        // Clear any output buffer to prevent HTML error display
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'error' => 'Fatal server error occurred',
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+        }
+        exit();
+    }
+});
+
+// Start output buffering to capture any unexpected output
+ob_start();
+
+// Function to log errors and send standardized response
+function handleError($message, $statusCode = 500, $logLevel = 'ERROR') {
+    error_log("[$logLevel] API Error: $message");
+    http_response_code($statusCode);
+    echo json_encode([
+        'success' => false,
+        'error' => $message,
+        'timestamp' => date('Y-m-d H:i:s')
+    ]);
+    exit();
+}
+
+// Function to send success response
+function sendSuccess($data, $statusCode = 200) {
+    http_response_code($statusCode);
+    echo json_encode([
+        'success' => true,
+        'data' => $data,
+        'timestamp' => date('Y-m-d H:i:s')
+    ]);
+}
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
@@ -17,42 +107,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-$config = new ConfigAppEnvFile;
-$config->loadEnv();
-
-$pdoConnection = \SoftplanTasksApi\Infrastructure\Persistence\PdoConnectionCreator::createConnection(
-    $config->getHost(),
-    $config->getDBName(),
-    $config->getUsername(),
-    $config->getPassword(),
-);
-
-// Validate database connection
-if (!$pdoConnection) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Database connection failed. Please check your database configuration.'
-    ]);
-    exit();
-}
-
-// Test the connection with a simple query
 try {
+    $config = new ConfigAppEnvFile;
+    $config->loadEnv();
+} catch (Exception $e) {
+    handleError('Configuration error: ' . $e->getMessage(), 500);
+}
+
+try {
+    $pdoConnection = \SoftplanTasksApi\Infrastructure\Persistence\PdoConnectionCreator::createConnection(
+        $config->getHost(),
+        $config->getDBName(),
+        $config->getUsername(),
+        $config->getPassword(),
+    );
+    
+    // Validate database connection
+    if (!$pdoConnection) {
+        handleError('Database connection failed. Please check your database configuration.', 500);
+    }
+    
+    // Test the connection with a simple query
     $pdoConnection->query('SELECT 1');
+    
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Database connection failed: ' . $e->getMessage()
-    ]);
-    exit();
+    handleError('Database connection failed: ' . $e->getMessage(), 500);
+} catch (Exception $e) {
+    handleError('Database setup error: ' . $e->getMessage(), 500);
 }
 
 
-$userRepository = new PdoUserRepository($pdoConnection);
-$sessionRepository = new PdoSessionRepository($pdoConnection);
-$authService = new AuthService($userRepository, $sessionRepository);
+try {
+    $userRepository = new PdoUserRepository($pdoConnection);
+    $sessionRepository = new PdoSessionRepository($pdoConnection);
+    $authService = new AuthService($userRepository, $sessionRepository);
+} catch (Exception $e) {
+    handleError('Service initialization error: ' . $e->getMessage(), 500);
+}
 
 $method = $_SERVER['REQUEST_METHOD'];
 $path = $_GET['action'] ?? '';
@@ -64,74 +155,64 @@ try {
             
             switch ($path) {
                 case 'login':
-                    if (!isset($input['username']) || !isset($input['password'])) {
-                        http_response_code(400);
-                        echo json_encode(['error' => 'Username and password are required']);
-                        exit();
-                    }
-                    
-                    $result = $authService->login($input['username'], $input['password']);
-                    
-                    if ($result) {
-                        echo json_encode([
-                            'success' => true,
-                            'data' => $result
-                        ]);
-                    } else {
-                        http_response_code(401);
-                        echo json_encode(['error' => 'Invalid credentials']);
+                    try {
+                        if (!isset($input['username']) || !isset($input['password'])) {
+                            handleError('Username and password are required', 400);
+                        }
+                        
+                        $result = $authService->login($input['username'], $input['password']);
+                        
+                        if ($result) {
+                            sendSuccess($result);
+                        } else {
+                            handleError('Invalid credentials', 401);
+                        }
+                    } catch (Exception $e) {
+                        handleError('Login error: ' . $e->getMessage(), 500);
                     }
                     break;
                     
                 case 'register':
-                    if (!isset($input['username']) || !isset($input['email']) || !isset($input['password'])) {
-                        http_response_code(400);
-                        echo json_encode(['error' => 'Username, email and password are required']);
-                        exit();
-                    }
-                    
                     try {
+                        if (!isset($input['username']) || !isset($input['email']) || !isset($input['password'])) {
+                            handleError('Username, email and password are required', 400);
+                        }
+                        
                         $result = $authService->register($input['username'], $input['email'], $input['password']);
-                    } catch (\Exception $e) {
-                        http_response_code(400);
-                        echo json_encode(['error' => $e->getMessage()]);
-                        exit();
-                    }
-                    
-
-                    if ($result) {
-                        http_response_code(201);
-                        echo json_encode([
-                            'success' => true,
-                            'data' => $result
-                        ]);
-                    } else {
-                        http_response_code(400);
-                        echo json_encode(['error' => 'User already exists or password is too weak']);
+                        
+                        if ($result) {
+                            sendSuccess($result, 201);
+                        } else {
+                            handleError('User already exists or password is too weak', 400);
+                        }
+                    } catch (Exception $e) {
+                        handleError('Registration error: ' . $e->getMessage(), 400);
                     }
                     break;
                     
                 case 'logout':
-                    $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
-                    $token = str_replace('Bearer ', '', $authHeader);
-                    
-                    if (!$token) {
-                        http_response_code(400);
-                        echo json_encode(['error' => 'Token is required']);
-                        exit();
+                    try {
+                        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+                        $token = str_replace('Bearer ', '', $authHeader);
+                        
+                        if (!$token) {
+                            handleError('Token is required', 400);
+                        }
+                        
+                        $result = $authService->logout($token);
+                        
+                        if ($result) {
+                            sendSuccess(['message' => 'Logged out successfully']);
+                        } else {
+                            handleError('Failed to logout', 400);
+                        }
+                    } catch (Exception $e) {
+                        handleError('Logout error: ' . $e->getMessage(), 500);
                     }
-                    
-                    $result = $authService->logout($token);
-                    
-                    echo json_encode([
-                        'success' => $result,
-                        'message' => $result ? 'Logged out successfully' : 'Failed to logout'
-                    ]);
                     break;
                     
                 default:
-                    http_response_code(404);
-                    echo json_encode(['error' => 'Endpoint not found']);
+                    handleError('POST endpoint not found', 404);
                     break;
             }
             break;
@@ -139,45 +220,42 @@ try {
         case 'GET':
             switch ($path) {
                 case 'validate':
-                    $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
-                    $token = str_replace('Bearer ', '', $authHeader);
-                    
-                    if (!$token) {
-                        http_response_code(401);
-                        echo json_encode(['error' => 'Token is required']);
-                        exit();
-                    }
-                    
-                    $user = $authService->validateSession($token);
-                    
-                    if ($user) {
-                        echo json_encode([
-                            'success' => true,
-                            'user' => [
-                                'id' => $user->id,
-                                'username' => $user->username,
-                                'email' => $user->email
-                            ]
-                        ]);
-                    } else {
-                        http_response_code(401);
-                        echo json_encode(['error' => 'Invalid or expired token']);
+                    try {
+                        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+                        $token = str_replace('Bearer ', '', $authHeader);
+                        
+                        if (!$token) {
+                            handleError('Token is required', 401);
+                        }
+                        
+                        $user = $authService->validateSession($token);
+                        
+                        if ($user) {
+                            sendSuccess([
+                                'user' => [
+                                    'id' => $user->id,
+                                    'username' => $user->username,
+                                    'email' => $user->email
+                                ]
+                            ]);
+                        } else {
+                            handleError('Invalid or expired token', 401);
+                        }
+                    } catch (Exception $e) {
+                        handleError('Token validation error: ' . $e->getMessage(), 500);
                     }
                     break;
                     
                 default:
-                    http_response_code(404);
-                    echo json_encode(['error' => 'Endpoint not found']);
+                    handleError('Endpoint not found', 404);
                     break;
             }
             break;
             
         default:
-            http_response_code(405);
-            echo json_encode(['error' => 'Method not allowed']);
+            handleError('Method not allowed', 405);
             break;
     }
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Internal server error: ' . $e->getMessage()]);
+    handleError('Unexpected error: ' . $e->getMessage(), 500);
 }
