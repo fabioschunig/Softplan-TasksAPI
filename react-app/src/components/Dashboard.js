@@ -84,7 +84,7 @@ const Dashboard = ({ user, onLogout }) => {
       <div className="dashboard-header">
         <h1>Softplan Tasks</h1>
         <div className="user-info">
-          <span>Welcome, {user.username}!</span>
+          <span>Welcome, {user?.username || 'User'}!</span>
           <button onClick={handleLogout} className="logout-button">
             Logout
           </button>
