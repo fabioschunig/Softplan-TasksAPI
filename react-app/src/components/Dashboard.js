@@ -21,8 +21,8 @@ const Dashboard = ({ user, onLogout }) => {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setTasks(data.tasks || []);
+        const result = await response.json();
+        setTasks(result.data?.tasks || []);
       } else if (response.status === 401) {
         // Token expired or invalid
         handleLogout();
