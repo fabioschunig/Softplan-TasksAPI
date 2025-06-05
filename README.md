@@ -16,31 +16,46 @@ Simple API to list Softplan tasks with user authentication system
 - **Database**: MySQL with PDO
 - **Security**: Argon2ID password hashing, session tokens
 
-## Quick Start
+## 📋 Prerequisites
+- PHP 8+ 
+- MySQL
+- Node.js and npm
+- Composer
 
-### 1. Database Setup
+## 🚀 Quick Start
+
+### 1. 🗄️ Database Setup
 ```bash
-# Create database and run SQL script
-mysql -u root -p < database/mysql.sql
+# Create the database
+mysql -u root -p -e "CREATE DATABASE softplan_task_api;"
+
+# Run SQL script (creates tables: project, task, users, user_sessions)
+mysql -u root -p softplan_task_api < database/mysql.sql
 ```
 
-### 2. Backend Setup
+### 2. ⚙️ Backend Setup
 ```bash
 # Install PHP dependencies
 composer install
 
-# Configure environment (create config/.env file)
+# Create configuration file
 cp config/.env.example config/.env
-# Edit config/.env with your database credentials
 
-# Start PHP server (port 8000)
+# Edit config/.env with your MySQL credentials
+# Example:
+# DB_HOST=localhost
+# DB_USER=root  
+# DB_PASS=your_mysql_password
+# DB_NAME=softplan_task_api
+
+# Give permission and start PHP server (port 8000)
 chmod +x start-server.sh
 ./start-server.sh
 ```
 
-### 3. Frontend Setup
+### 3. 🎨 Frontend Setup
 ```bash
-# Navigate to React app
+# Navigate to React app directory
 cd react-app
 
 # Install dependencies
@@ -50,24 +65,41 @@ npm install
 npm start
 ```
 
-### 4. Access Application
+### 4. 🌐 Access Application
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8000
 
-The React app will automatically proxy API calls to the PHP server.
+The React app is already configured with proxy for the PHP API.
 
-## API Endpoints
+## 🔐 Authentication System
+
+The project includes a complete authentication system with:
+
+- **User Registration/Login** with secure credentials
+- **Session Tokens** (64-character secure tokens)
+- **Password Encryption** using Argon2ID
+- **Session Expiration** (24-hour lifetime)
+- **Protected APIs** requiring authentication
+
+### 🎯 Usage Flow
+
+1. Access http://localhost:3000
+2. Register a new user or login with existing credentials
+3. Access the dashboard with tasks
+4. Token is automatically managed by the frontend
+
+## 📡 API Endpoints
 
 ### Authentication
-- `POST /auth.api.php?action=login` - User login
 - `POST /auth.api.php?action=register` - User registration  
+- `POST /auth.api.php?action=login` - User login
 - `POST /auth.api.php?action=logout` - User logout
 - `GET /auth.api.php?action=validate` - Validate session token
 
 ### Tasks (Protected)
 - `GET /task.api.php` - Get all tasks (requires authentication)
 
-## Authentication Flow
+## 🔄 Authentication Flow
 
 1. **Register/Login**: User provides credentials
 2. **Token Generation**: Server creates secure session token
@@ -115,7 +147,7 @@ react-app/
 3. **CORS Issues**: APIs include proper CORS headers
 4. **Port Conflicts**: Change ports in start-server.sh or package.json if needed
 
-### Development Commands
+### 🔧 Useful Commands
 
 ```bash
 # Start PHP server manually
@@ -129,6 +161,9 @@ composer install
 
 # React development server
 cd react-app && npm start
+
+# Reinstall React dependencies
+cd react-app && npm install
 ```
 
 ## Usage Examples
