@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import ProjectManager from './ProjectManager';
 import './Auth.css';
 
 const Dashboard = ({ user, onLogout }) => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState('tasks');
 
   useEffect(() => {
     fetchTasks();
@@ -91,31 +93,50 @@ const Dashboard = ({ user, onLogout }) => {
         </div>
       </div>
 
+      <div className="dashboard-tabs">
+        <button 
+          className={`tab-button ${activeTab === 'tasks' ? 'active' : ''}`}
+          onClick={() => setActiveTab('tasks')}
+        >
+          Tasks
+        </button>
+        <button 
+          className={`tab-button ${activeTab === 'projects' ? 'active' : ''}`}
+          onClick={() => setActiveTab('projects')}
+        >
+          Projects
+        </button>
+      </div>
+
       {error && <div className="error-message">{error}</div>}
 
-      <div className="tasks-container">
-        <h2>Your Tasks</h2>
-        {tasks.length === 0 ? (
-          <p>No tasks found.</p>
-        ) : (
-          tasks.map((task) => (
-            <div key={task.id} className="task-item">
-              <div className="task-description">{task.description}</div>
-              <div className="task-meta">
-                <strong>Status:</strong> {getStatusText(task.status)} | 
-                <strong> Started:</strong> {formatDate(task.started)} | 
-                <strong> Finished:</strong> {formatDate(task.finished)}
-                {task.tags && (
-                  <>
-                    <br />
-                    <strong>Tags:</strong> {task.tags}
-                  </>
-                )}
+      {activeTab === 'tasks' && (
+        <div className="tasks-container">
+          <h2>Your Tasks</h2>
+          {tasks.length === 0 ? (
+            <p>No tasks found.</p>
+          ) : (
+            tasks.map((task) => (
+              <div key={task.id} className="task-item">
+                <div className="task-description">{task.description}</div>
+                <div className="task-meta">
+                  <strong>Status:</strong> {getStatusText(task.status)} | 
+                  <strong> Started:</strong> {formatDate(task.started)} | 
+                  <strong> Finished:</strong> {formatDate(task.finished)}
+                  {task.tags && (
+                    <>
+                      <br />
+                      <strong>Tags:</strong> {task.tags}
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          ))
-        )}
-      </div>
+            ))
+          )}
+        </div>
+      )}
+
+      {activeTab === 'projects' && <ProjectManager />}
     </div>
   );
 };
