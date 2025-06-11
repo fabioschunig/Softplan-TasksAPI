@@ -1,42 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ProjectManager from './ProjectManager';
+import TaskManager from './TaskManager';
 import './Auth.css';
 
 const Dashboard = ({ user, onLogout }) => {
-  const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('tasks');
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-  const fetchTasks = async () => {
-    try {
-      const token = localStorage.getItem('authToken');
-      const response = await fetch('/task.api.php', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        setTasks(result.data?.tasks || []);
-      } else if (response.status === 401) {
-        // Token expired or invalid
-        handleLogout();
-      } else {
-        setError('Failed to fetch tasks');
-      }
-    } catch (err) {
-      setError('Network error. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [activeTab, setActiveTab] = useState('tasks'); // Default to tasks tab
 
   const handleLogout = async () => {
     try {
@@ -57,29 +25,6 @@ const Dashboard = ({ user, onLogout }) => {
     }
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString();
-  };
-
-  const getStatusText = (status) => {
-    switch (status) {
-      case 0: return 'Pending';
-      case 1: return 'In Progress';
-      case 2: return 'Completed';
-      default: return 'Unknown';
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="dashboard">
-        <div className="dashboard-header">
-          <h1>Loading...</h1>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="dashboard">
@@ -108,35 +53,10 @@ const Dashboard = ({ user, onLogout }) => {
         </button>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
-
-      {activeTab === 'tasks' && (
-        <div className="tasks-container">
-          <h2>Your Tasks</h2>
-          {tasks.length === 0 ? (
-            <p>No tasks found.</p>
-          ) : (
-            tasks.map((task) => (
-              <div key={task.id} className="task-item">
-                <div className="task-description">{task.description}</div>
-                <div className="task-meta">
-                  <strong>Status:</strong> {getStatusText(task.status)} | 
-                  <strong> Started:</strong> {formatDate(task.started)} | 
-                  <strong> Finished:</strong> {formatDate(task.finished)}
-                  {task.tags && (
-                    <>
-                      <br />
-                      <strong>Tags:</strong> {task.tags}
-                    </>
-                  )}
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      )}
-
-      {activeTab === 'projects' && <ProjectManager />}
+      <div className="dashboard-content">
+        {activeTab === 'tasks' && <TaskManager />}
+        {activeTab === 'projects' && <ProjectManager />}
+      </div>
     </div>
   );
 };

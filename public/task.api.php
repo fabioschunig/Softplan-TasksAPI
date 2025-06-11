@@ -4,6 +4,7 @@ use SoftplanTasksApi\Application\Config\ConfigAppEnvFile;
 use SoftplanTasksApi\Infrastructure\Repository\PdoTaskRepository;
 use SoftplanTasksApi\Infrastructure\Repository\PdoUserRepository;
 use SoftplanTasksApi\Infrastructure\Repository\PdoSessionRepository;
+use SoftplanTasksApi\Application\Service\TaskService;
 use SoftplanTasksApi\Application\Service\AuthService;
 use SoftplanTasksApi\Infrastructure\Middleware\AuthMiddleware;
 
@@ -101,7 +102,7 @@ function sendSuccess($data, $statusCode = 200) {
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -139,27 +140,113 @@ try {
 }
 
 try {
-    // Setup authentication
+    $taskRepository = new PdoTaskRepository($pdoConnection);
+    $taskService = new TaskService($taskRepository);
+
+    // Auth services for middleware
     $userRepository = new PdoUserRepository($pdoConnection);
     $sessionRepository = new PdoSessionRepository($pdoConnection);
     $authService = new AuthService($userRepository, $sessionRepository);
     $authMiddleware = new AuthMiddleware($authService);
-    
-    // Require authentication
-    $user = $authMiddleware->requireAuth();
-    
-    $taskRepository = new PdoTaskRepository($pdoConnection);
-    $tasks = $taskRepository->allTasks();
-    
-    // API response in JSON
-    sendSuccess([
-        'tasks' => $tasks,
-        'user' => [
-            'id' => $user->id,
-            'username' => $user->username
-        ]
-    ]);
-    
 } catch (Exception $e) {
-    handleError('Tasks API error: ' . $e->getMessage(), 500);
+    handleError('Service initialization error: ' . $e->getMessage(), 500);
+}
+
+// Authenticate user for all requests
+try {
+    $user = $authMiddleware->authenticate();
+    if (!$user) {
+        handleError('Authentication required', 401);
+    }
+} catch (Exception $e) {
+    handleError('Authentication error: ' . $e->getMessage(), 401);
+}
+
+$method = $_SERVER['REQUEST_METHOD'];
+
+$requestUri = $_SERVER['REQUEST_URI'];
+$scriptName = $_SERVER['SCRIPT_NAME'];
+
+$pathInfo = '';
+if (strpos($requestUri, $scriptName) === 0) {
+    $pathInfo = substr($requestUri, strlen($scriptName));
+} else {
+    $pathInfo = $_SERVER['PATH_INFO'] ?? '';
+}
+
+if (($pos = strpos($pathInfo, '?')) !== false) {
+    $pathInfo = substr($pathInfo, 0, $pos);
+}
+
+$segments = array_filter(explode('/', trim($pathInfo, '/')));
+$taskId = isset($segments[0]) && is_numeric($segments[0]) ? (int)$segments[0] : null;
+
+try {
+    switch ($method) {
+        case 'GET':
+            if ($taskId) {
+                $task = $taskService->getTaskById($taskId);
+                if ($task) {
+                    sendSuccess($task);
+                } else {
+                    handleError('Task not found', 404);
+                }
+            } else {
+                $searchText = $_GET['search'] ?? null;
+                $startDate = $_GET['start_date'] ?? null;
+                $endDate = $_GET['end_date'] ?? null;
+                $tasks = $taskService->searchTasks($searchText, $startDate, $endDate);
+                sendSuccess($tasks);
+            }
+            break;
+
+        case 'POST':
+            $input = json_decode(file_get_contents('php://input'), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                handleError('Invalid JSON input', 400);
+            }
+            $result = $taskService->createTask($input);
+            if ($result) {
+                sendSuccess(['message' => 'Task created successfully'], 201);
+            } else {
+                handleError('Failed to create task', 400);
+            }
+            break;
+
+        case 'PUT':
+            if (!$taskId) {
+                handleError('Task ID is required for update', 400);
+            }
+            $input = json_decode(file_get_contents('php://input'), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                handleError('Invalid JSON input', 400);
+            }
+            $result = $taskService->updateTask($taskId, $input);
+            if ($result) {
+                sendSuccess(['message' => 'Task updated successfully']);
+            } else {
+                handleError('Task not found or failed to update', 404);
+            }
+            break;
+
+        case 'DELETE':
+            if (!$taskId) {
+                handleError('Task ID is required for deletion', 400);
+            }
+            $result = $taskService->deleteTask($taskId);
+            if ($result) {
+                sendSuccess(['message' => 'Task deleted successfully']);
+            } else {
+                handleError('Task not found', 404);
+            }
+            break;
+
+        default:
+            handleError('Method not allowed', 405);
+            break;
+    }
+} catch (InvalidArgumentException $e) {
+    handleError($e->getMessage(), 400);
+} catch (Exception $e) {
+    handleError('An unexpected error occurred: ' . $e->getMessage(), 500);
 }

@@ -496,3 +496,66 @@
     flex-direction: column;
   }
 }
+
+/* Task Manager Specific Styles */
+.task-tags, .task-project, .task-status {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.5rem;
+}
+
+.task-tags em {
+  font-style: normal;
+  background: #e1e5e9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 4px;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.task-status {
+  font-weight: 600;
+}
+
+.task-status .status-text-pending {
+  color: #b08f00;
+}
+
+.task-status .status-text-in-progress {
+  color: #007bff;
+}
+
+.task-status .status-text-completed {
+  color: #28a745;
+}
+
+.project-card .task-status {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e1e5e9;
+}
+
+/* Style for select dropdowns in forms */
+.project-form select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 5px;
+  font-size: 1rem;
+  background: white;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23667eea%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 0.7em top 50%, 0 0;
+  background-size: 0.65em auto, 100%;
+}
+
+.project-form select:focus {
+  outline: none;
+  border-color: #667eea;
+}
