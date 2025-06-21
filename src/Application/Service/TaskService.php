@@ -31,14 +31,20 @@ class TaskService
             throw new InvalidArgumentException('A descrição da tarefa é obrigatória e deve ter no máximo 255 caracteres.');
         }
 
-        // O modelo Task espera todos os campos no construtor, vamos preencher com valores padrão
+        $started = isset($data['started']) && $data['started'] ? new \DateTime($data['started']) : null;
+        $finished = isset($data['finished']) && $data['finished'] ? new \DateTime($data['finished']) : null;
+
+        if ($started && $finished && $finished < $started) {
+            throw new InvalidArgumentException('A data de término não pode ser anterior à data de início.');
+        }
+
         $task = new Task(
             0, // ID será gerado pelo banco
             $data['description'],
             $data['tags'] ?? null,
             $data['project_id'] ?? null,
-            null, // started
-            null, // finished
+            $started,
+            $finished,
             $data['status'] ?? 0,
             null, // created
             null // updated
@@ -69,6 +75,10 @@ class TaskService
 
         if (strlen($updatedTask->description) > 255) {
             throw new InvalidArgumentException('A descrição da tarefa deve ter no máximo 255 caracteres.');
+        }
+
+        if ($updatedTask->started && $updatedTask->finished && $updatedTask->finished < $updatedTask->started) {
+            throw new InvalidArgumentException('A data de término não pode ser anterior à data de início.');
         }
 
         return $this->taskRepository->update($updatedTask);

@@ -497,6 +497,39 @@
   }
 }
 
+/* react-datepicker custom styles */
+.date-picker-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.date-picker-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__header {
+  background-color: #667eea;
+}
+
+.react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker__day-name {
+  color: white;
+  font-weight: 500;
+}
+
+.react-datepicker__day--selected, .react-datepicker__day--keyboard-selected {
+  background-color: #764ba2;
+}
+
 /* Task Manager Specific Styles */
 .task-tags, .task-project, .task-status {
   font-size: 0.85rem;

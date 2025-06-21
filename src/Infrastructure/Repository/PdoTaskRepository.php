@@ -96,14 +96,16 @@ class PdoTaskRepository implements TaskRepository
     public function create(Task $task): bool
     {
         $stmt = $this->connection->prepare(
-            'INSERT INTO task (description, tags, project_id, status) VALUES (?, ?, ?, ?)'
+            'INSERT INTO task (description, tags, project_id, status, started, finished) VALUES (?, ?, ?, ?, ?, ?)'
         );
 
         return $stmt->execute([
             $task->description,
             $task->tags,
             $task->projectId,
-            $task->status
+            $task->status,
+            $task->started ? $task->started->format('Y-m-d H:i:s') : null,
+            $task->finished ? $task->finished->format('Y-m-d H:i:s') : null
         ]);
     }
 

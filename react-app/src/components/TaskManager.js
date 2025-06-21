@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import './Auth.css'; // Reusing the same CSS for consistency
 
 const TaskManager = () => {
@@ -8,7 +10,7 @@ const TaskManager = () => {
   const [error, setError] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [formData, setFormData] = useState({ description: '', tags: '', project_id: '', status: 0 });
+  const [formData, setFormData] = useState({ description: '', tags: '', project_id: '', status: 0, started: null, finished: null });
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -71,7 +73,9 @@ const TaskManager = () => {
         description: formData.description.trim(),
         tags: formData.tags.trim(),
         project_id: formData.project_id ? parseInt(formData.project_id, 10) : null,
-        status: parseInt(formData.status, 10)
+        status: parseInt(formData.status, 10),
+                started: formData.started ? formData.started.toISOString().slice(0, 10) : null,
+        finished: formData.finished ? formData.finished.toISOString().slice(0, 10) : null
     };
 
     try {
@@ -116,11 +120,14 @@ const TaskManager = () => {
 
   const startEdit = (task) => {
     setEditingTask(task);
+        setEditingTask(task);
     setFormData({ 
         description: task.description, 
         tags: task.tags || '', 
         project_id: task.project_id || '',
-        status: task.status || 0
+        status: task.status || 0,
+        started: task.started ? new Date(task.started) : null,
+        finished: task.finished ? new Date(task.finished) : null
     });
     setShowCreateForm(false);
   };
@@ -128,7 +135,7 @@ const TaskManager = () => {
   const resetForm = () => {
     setEditingTask(null);
     setShowCreateForm(false);
-    setFormData({ description: '', tags: '', project_id: '', status: 0 });
+    setFormData({ description: '', tags: '', project_id: '', status: 0, started: null, finished: null });
     setError('');
   };
 
@@ -148,7 +155,7 @@ const TaskManager = () => {
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleString('pt-BR');
+    return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
   const renderForm = () => (
@@ -202,6 +209,31 @@ const TaskManager = () => {
             <option value="2">Completed</option>
         </select>
       </div>
+            <div className="form-group">
+        <label htmlFor="started">Start Date:</label>
+        <DatePicker
+          id="started"
+          selected={formData.started}
+          onChange={(date) => setFormData({ ...formData, started: date })}
+          dateFormat="dd/MM/yyyy"
+          className="date-picker-input"
+          placeholderText="Select start date"
+          isClearable
+        />
+      </div>
+      <div className="form-group">
+        <label htmlFor="finished">End Date:</label>
+        <DatePicker
+          id="finished"
+          selected={formData.finished}
+          onChange={(date) => setFormData({ ...formData, finished: date })}
+          dateFormat="dd/MM/yyyy"
+          className="date-picker-input"
+          placeholderText="Select end date"
+          minDate={formData.started} // Prevent end date before start date
+          isClearable
+        />
+      </div>
       <div className="form-actions">
         <button type="submit" className="submit-button">{editingTask ? 'Update Task' : 'Create Task'}</button>
         <button type="button" onClick={resetForm} className="cancel-button">Cancel</button>
@@ -252,6 +284,8 @@ const TaskManager = () => {
                   <div className="project-dates">
                     <div><strong>Created:</strong> {formatDate(task.created)}</div>
                     {task.updated && <div><strong>Updated:</strong> {formatDate(task.updated)}</div>}
+                    {task.started && <div><strong>Started:</strong> {formatDate(task.started)}</div>}
+                    {task.finished && <div><strong>Finished:</strong> {formatDate(task.finished)}</div>}
                   </div>
                    <div className={`task-status`}><strong className={`status-text-${getStatusText(task.status).toLowerCase().replace(' ', '-')}`}>Status:</strong> {getStatusText(task.status)}</div>
                    <div className="task-project">
