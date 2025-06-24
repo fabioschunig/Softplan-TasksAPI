@@ -1,10 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import ProjectManager from './ProjectManager';
 import TaskManager from './TaskManager';
+import TaskReport from './TaskReport';
 import './Auth.css';
 
 const Dashboard = ({ user, onLogout }) => {
-  const [activeTab, setActiveTab] = useState('tasks'); // Default to tasks tab
+  const [activeTab, setActiveTab] = useState('tasks');
+  const [initialTaskAction, setInitialTaskAction] = useState(null);
+
+    const handleRequestNewTask = () => {
+    setInitialTaskAction({ action: 'new' });
+    setActiveTab('tasks');
+  };
+
+  const handleRequestEditTask = (taskId) => {
+    setInitialTaskAction({ action: 'edit', taskId });
+    setActiveTab('tasks');
+  };
+
+  // Reset the action when switching away from the tasks tab
+  useEffect(() => {
+    if (activeTab !== 'tasks') {
+      setInitialTaskAction(null);
+    }
+  }, [activeTab]);
 
   const handleLogout = async () => {
     try {
@@ -51,11 +70,18 @@ const Dashboard = ({ user, onLogout }) => {
         >
           Projects
         </button>
+        <button 
+          className={`tab-button ${activeTab === 'report' ? 'active' : ''}`}
+          onClick={() => setActiveTab('report')}
+        >
+          Report
+        </button>
       </div>
 
       <div className="dashboard-content">
-        {activeTab === 'tasks' && <TaskManager />}
+        {activeTab === 'tasks' && <TaskManager initialAction={initialTaskAction} />}
         {activeTab === 'projects' && <ProjectManager />}
+        {activeTab === 'report' && <TaskReport onNewTask={handleRequestNewTask} onEditTask={handleRequestEditTask} />}
       </div>
     </div>
   );

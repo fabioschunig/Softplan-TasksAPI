@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Auth.css'; // Reusing the same CSS for consistency
 
-const TaskManager = () => {
+const TaskManager = ({ initialAction }) => {
   const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,10 +13,28 @@ const TaskManager = () => {
   const [formData, setFormData] = useState({ description: '', tags: '', project_id: '', status: 0, started: null, finished: null });
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
+    useEffect(() => {
     fetchTasks();
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    if (initialAction) {
+      if (initialAction.action === 'new') {
+        setShowCreateForm(true);
+        setEditingTask(null);
+        resetForm(true); // Keep form open
+      } else if (initialAction.action === 'edit' && initialAction.taskId) {
+        const taskToEdit = tasks.find(t => t.id === initialAction.taskId);
+        if (taskToEdit) {
+          startEdit(taskToEdit);
+        } else {
+          // If task is not in the list, fetch it individually
+          fetchTaskAndEdit(initialAction.taskId);
+        }
+      }
+    }
+  }, [initialAction, tasks]);
 
   const getAuthHeaders = () => ({
     'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
@@ -44,6 +62,20 @@ const TaskManager = () => {
       setError('Network error. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+    const fetchTaskAndEdit = async (taskId) => {
+    try {
+      const response = await fetch(`/task.api.php/${taskId}`, { headers: getAuthHeaders() });
+      if (response.ok) {
+        const result = await response.json();
+        if (result.data) {
+          startEdit(result.data);
+        }
+      }
+    } catch (err) {
+      setError('Failed to fetch task for editing.');
     }
   };
 
@@ -120,7 +152,7 @@ const TaskManager = () => {
 
   const startEdit = (task) => {
     setEditingTask(task);
-        setEditingTask(task);
+            setEditingTask(task);
     setFormData({ 
         description: task.description, 
         tags: task.tags || '', 
@@ -129,15 +161,17 @@ const TaskManager = () => {
         started: task.started ? new Date(task.started) : null,
         finished: task.finished ? new Date(task.finished) : null
     });
-    setShowCreateForm(false);
+    setShowCreateForm(false); // Hide create form if it was open
+    setEditingTask(task); // Ensure edit form is shown
   };
 
-  const resetForm = () => {
+    const resetForm = (keepCreateFormOpen = false) => {
     setEditingTask(null);
-    setShowCreateForm(false);
+    setShowCreateForm(keepCreateFormOpen);
     setFormData({ description: '', tags: '', project_id: '', status: 0, started: null, finished: null });
     setError('');
   };
+
 
   const handleSearch = (e) => {
     e.preventDefault();
