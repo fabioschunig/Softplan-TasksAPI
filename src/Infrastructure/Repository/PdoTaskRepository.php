@@ -29,7 +29,7 @@ class PdoTaskRepository implements TaskRepository
         $sqlQuery = "SELECT * FROM task WHERE 1=1";
 
         if ($searchText) {
-            $sqlQuery .= " AND description like :searchText";
+            $sqlQuery .= " AND (description LIKE :searchText OR tags LIKE :searchText)";
         }
 
         if ($startDate) {
