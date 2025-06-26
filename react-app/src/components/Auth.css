@@ -561,6 +561,16 @@
   color: #333;
 }
 
+.report-table.sortable th {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+}
+
+.report-table.sortable th:hover {
+  background-color: #f1f3f5;
+}
+
 .report-table tbody tr:nth-child(even) {
   background-color: #f8f9fa;
 }

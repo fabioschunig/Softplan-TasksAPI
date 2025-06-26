@@ -7,6 +7,7 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortConfig, setSortConfig] = useState({ key: 'description', direction: 'ascending' });
 
   useEffect(() => {
     fetchTasks();
@@ -75,12 +76,7 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
     }
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    fetchTasks();
-  };
-
-  const getProjectName = (projectId) => {
+    const getProjectName = (projectId) => {
     const project = projects.find(p => p.id === projectId);
     return project ? project.description : 'N/A';
   };
@@ -93,6 +89,62 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
       default: return 'Unknown';
     }
   };
+
+  const sortedTasks = React.useMemo(() => {
+    let sortableItems = [...tasks];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        let aValue = a[sortConfig.key];
+        let bValue = b[sortConfig.key];
+
+        // Handle special cases like project name
+        if (sortConfig.key === 'project_id') {
+          aValue = getProjectName(a.project_id);
+          bValue = getProjectName(b.project_id);
+        }
+        if (sortConfig.key === 'status') {
+            aValue = getStatusText(a.status);
+            bValue = getStatusText(b.status);
+        } else if (sortConfig.key === 'started' || sortConfig.key === 'finished') {
+            // Treat null or invalid dates as being "greater" so they sort to the end.
+            if (!aValue) return 1;
+            if (!bValue) return -1;
+            aValue = new Date(aValue);
+            bValue = new Date(bValue);
+        }
+
+        if (aValue < bValue) {
+          return sortConfig.direction === 'ascending' ? -1 : 1;
+        }
+        if (aValue > bValue) {
+          return sortConfig.direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [tasks, sortConfig, projects]);
+
+  const requestSort = (key) => {
+    let direction = 'ascending';
+    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
+      direction = 'descending';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIndicator = (columnKey) => {
+    if (sortConfig.key === columnKey) {
+      return sortConfig.direction === 'ascending' ? ' ▲' : ' ▼';
+    }
+    return null;
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchTasks();
+  };
+
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
@@ -126,22 +178,22 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
       </form>
 
       <div className="report-table-container">
-        <table className="report-table">
+                <table className="report-table sortable">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Description</th>
-              <th>Project</th>
-              <th>Status</th>
-              <th>Tags</th>
-              <th>Start Date</th>
-              <th>End Date</th>
+              <th onClick={() => requestSort('id')}>ID{getSortIndicator('id')}</th>
+              <th onClick={() => requestSort('description')}>Description{getSortIndicator('description')}</th>
+              <th onClick={() => requestSort('project_id')}>Project{getSortIndicator('project_id')}</th>
+              <th onClick={() => requestSort('status')}>Status{getSortIndicator('status')}</th>
+              <th onClick={() => requestSort('tags')}>Tags{getSortIndicator('tags')}</th>
+              <th onClick={() => requestSort('started')}>Start Date{getSortIndicator('started')}</th>
+              <th onClick={() => requestSort('finished')}>End Date{getSortIndicator('finished')}</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {tasks.length > 0 ? (
-              tasks.map(task => (
+              sortedTasks.map(task => (
                 <tr key={task.id}>
                   <td>{task.id}</td>
                   <td>{task.description}</td>
