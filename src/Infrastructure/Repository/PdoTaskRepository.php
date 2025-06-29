@@ -26,18 +26,18 @@ class PdoTaskRepository implements TaskRepository
         DateTime|null $startDate,
         DateTime|null $endDate
     ): array {
-        $sqlQuery = "SELECT * FROM task WHERE 1=1";
+        $sqlQuery = "SELECT t.* FROM task t LEFT JOIN project p ON t.project_id = p.id WHERE 1=1";
 
         if ($searchText) {
-            $sqlQuery .= " AND (description LIKE :searchText OR tags LIKE :searchText)";
+            $sqlQuery .= " AND (t.description LIKE :searchText OR t.tags LIKE :searchText OR p.description LIKE :searchText)";
         }
 
         if ($startDate) {
-            $sqlQuery .= " AND started >= :startDate";
+            $sqlQuery .= " AND t.started >= :startDate";
         }
 
         if ($endDate) {
-            $sqlQuery .= " AND finished <= :endDate";
+            $sqlQuery .= " AND t.finished <= :endDate";
         }
 
         $stmt = $this->connection->prepare($sqlQuery);
