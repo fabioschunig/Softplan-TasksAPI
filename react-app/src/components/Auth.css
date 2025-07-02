@@ -466,6 +466,45 @@
   background: #c82333;
 }
 
+/* Filter Row Styles */
+.filter-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.date-picker-input {
+  padding: 0.5rem;
+  border: 2px solid #e1e5e9;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  min-width: 150px;
+  transition: border-color 0.3s ease;
+  width: 150px;
+}
+
+.date-picker-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.clear-button {
+  padding: 0.5rem 1rem;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.clear-button:hover {
+  background: #5a6268;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .dashboard {
@@ -486,6 +525,16 @@
   
   .search-form {
     flex-direction: column;
+  }
+  
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .date-picker-input {
+    min-width: auto;
+    width: 100%;
   }
   
   .projects-grid {

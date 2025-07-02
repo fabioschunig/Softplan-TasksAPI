@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import './Auth.css';
 
 const TaskReport = ({ onNewTask, onEditTask }) => {
@@ -7,6 +9,8 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [sortConfig, setSortConfig] = useState({ key: 'description', direction: 'ascending' });
 
   useEffect(() => {
@@ -22,8 +26,15 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      const url = searchTerm 
-        ? `/task.api.php?search=${encodeURIComponent(searchTerm)}`
+      
+      // Build query parameters
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('search', searchTerm);
+      if (startDate) params.append('start_date', startDate.toISOString().split('T')[0]);
+      if (endDate) params.append('end_date', endDate.toISOString().split('T')[0]);
+      
+      const url = params.toString() 
+        ? `/task.api.php?${params.toString()}`
         : '/task.api.php';
         
       const response = await fetch(url, { headers: getAuthHeaders() });
@@ -167,14 +178,47 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
       {error && <div className="error-message">{error}</div>}
 
       <form onSubmit={handleSearch} className="search-form">
-        <input
-          type="text"
-          placeholder="Search tasks..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-        <button type="submit" className="search-button">Search</button>
+        <div className="filter-row">
+          <input
+            type="text"
+            placeholder="Search tasks..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          <DatePicker
+            selected={startDate}
+            onChange={(date) => setStartDate(date)}
+            dateFormat="dd/MM/yyyy"
+            className="date-picker-input"
+            placeholderText="Start Date"
+            title="Filter tasks active from this date"
+            isClearable
+          />
+          <DatePicker
+            selected={endDate}
+            onChange={(date) => setEndDate(date)}
+            dateFormat="dd/MM/yyyy"
+            className="date-picker-input"
+            placeholderText="End Date"
+            title="Filter tasks active until this date"
+            minDate={startDate}
+            isClearable
+          />
+          <button type="submit" className="search-button">Filter</button>
+          <button 
+            type="button" 
+            onClick={() => {
+              setSearchTerm('');
+              setStartDate(null);
+              setEndDate(null);
+              fetchTasks();
+            }}
+            className="clear-button"
+          >
+            Clear
+          </button>
+        </div>
       </form>
 
       <div className="report-table-container">

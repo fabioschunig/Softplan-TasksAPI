@@ -32,12 +32,16 @@ class PdoTaskRepository implements TaskRepository
             $sqlQuery .= " AND (t.description LIKE :searchText OR t.tags LIKE :searchText OR p.description LIKE :searchText)";
         }
 
-        if ($startDate) {
-            $sqlQuery .= " AND t.started >= :startDate";
-        }
-
-        if ($endDate) {
-            $sqlQuery .= " AND t.finished <= :endDate";
+        if ($startDate && $endDate) {
+            // Tasks that were active during the specified period
+            // A task is active if: (task.started <= endDate) AND (task.finished >= startDate OR task.finished IS NULL)
+            $sqlQuery .= " AND (t.started <= :endDate) AND (t.finished >= :startDate OR t.finished IS NULL)";
+        } elseif ($startDate) {
+            // Tasks that were active on or after the start date
+            $sqlQuery .= " AND (t.finished >= :startDate OR t.finished IS NULL)";
+        } elseif ($endDate) {
+            // Tasks that were active on or before the end date
+            $sqlQuery .= " AND t.started <= :endDate";
         }
 
         $stmt = $this->connection->prepare($sqlQuery);
