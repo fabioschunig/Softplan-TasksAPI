@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Auth.css';
 
-const Login = ({ onLogin, onSwitchToRegister }) => {
+const Login = ({ onLogin }) => {
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -92,12 +92,6 @@ const Login = ({ onLogin, onSwitchToRegister }) => {
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
-        <p className="auth-switch">
-          Don't have an account?{' '}
-          <button onClick={onSwitchToRegister} className="link-button">
-            Register here
-          </button>
-        </p>
       </div>
     </div>
   );

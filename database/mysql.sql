@@ -53,4 +53,9 @@ CREATE TABLE `user_sessions` (
   CONSTRAINT `fk_session_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Inserir usuário administrador padrão
+-- Senha padrão: adm!123 (hasheada com bcrypt)
+INSERT INTO `users` (`username`, `email`, `password_hash`) VALUES 
+('admin', 'admin@softplan.com', '$2y$10$WbQgNwZqDHWdQ9y3SLMD9.OvRWh6hOt2rKQi46WZCsdnlCAQ8fW22');
+
 commit;

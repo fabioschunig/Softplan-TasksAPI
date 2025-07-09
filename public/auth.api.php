@@ -172,23 +172,6 @@ try {
                     }
                     break;
                     
-                case 'register':
-                    try {
-                        if (!isset($input['username']) || !isset($input['email']) || !isset($input['password'])) {
-                            handleError('Username, email and password are required', 400);
-                        }
-                        
-                        $result = $authService->register($input['username'], $input['email'], $input['password']);
-                        
-                        if ($result) {
-                            sendSuccess($result, 201);
-                        } else {
-                            handleError('User already exists or password is too weak', 400);
-                        }
-                    } catch (Exception $e) {
-                        handleError('Registration error: ' . $e->getMessage(), 400);
-                    }
-                    break;
                     
                 case 'logout':
                     try {

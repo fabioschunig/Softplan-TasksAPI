@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Login from './components/Login';
-import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import './App.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -59,13 +57,6 @@ function App() {
     setIsAuthenticated(false);
   };
 
-  const switchToRegister = () => {
-    setAuthMode('register');
-  };
-
-  const switchToLogin = () => {
-    setAuthMode('login');
-  };
 
   if (loading) {
     return (
@@ -82,11 +73,7 @@ function App() {
       {isAuthenticated ? (
         <Dashboard user={user} onLogout={handleLogout} />
       ) : (
-        authMode === 'login' ? (
-          <Login onLogin={handleLogin} onSwitchToRegister={switchToRegister} />
-        ) : (
-          <Register onLogin={handleLogin} onSwitchToLogin={switchToLogin} />
-        )
+        <Login onLogin={handleLogin} />
       )}
     </div>
   );
