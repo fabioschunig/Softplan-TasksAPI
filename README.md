@@ -29,7 +29,7 @@ Simple API to list Softplan tasks with user authentication system
 # Create the database
 mysql -u root -p -e "CREATE DATABASE softplan_task_api;"
 
-# Run SQL script (creates tables: project, task, users, user_sessions)
+# Run SQL script (creates tables: project, task, user, user_session)
 mysql -u root -p softplan_task_api < database/mysql.sql
 ```
 

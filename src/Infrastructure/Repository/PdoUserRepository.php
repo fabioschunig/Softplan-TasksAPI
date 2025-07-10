@@ -18,7 +18,7 @@ class PdoUserRepository implements UserRepository
 
     public function findByUsername(string $username): User|null
     {
-        $stmt = $this->connection->prepare("SELECT * FROM users WHERE username = :username");
+        $stmt = $this->connection->prepare("SELECT * FROM user WHERE username = :username");
         $stmt->bindParam(':username', $username);
         $stmt->execute();
         
@@ -33,7 +33,7 @@ class PdoUserRepository implements UserRepository
 
     public function findByEmail(string $email): User|null
     {
-        $stmt = $this->connection->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt = $this->connection->prepare("SELECT * FROM user WHERE email = :email");
         $stmt->bindParam(':email', $email);
         $stmt->execute();
         
@@ -48,7 +48,7 @@ class PdoUserRepository implements UserRepository
 
     public function findById(int $id): User|null
     {
-        $stmt = $this->connection->prepare("SELECT * FROM users WHERE id = :id");
+        $stmt = $this->connection->prepare("SELECT * FROM user WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         
@@ -64,7 +64,7 @@ class PdoUserRepository implements UserRepository
     public function create(string $username, string $email, string $passwordHash): User
     {
         $stmt = $this->connection->prepare(
-            "INSERT INTO users (username, email, password_hash, created) VALUES (:username, :email, :password_hash, NOW())"
+            "INSERT INTO user (username, email, password_hash, created) VALUES (:username, :email, :password_hash, NOW())"
         );
         
         $stmt->bindParam(':username', $username);
@@ -81,7 +81,7 @@ class PdoUserRepository implements UserRepository
     public function update(User $user): bool
     {
         $stmt = $this->connection->prepare(
-            "UPDATE users SET username = :username, email = :email, password_hash = :password_hash, updated = NOW() WHERE id = :id"
+            "UPDATE user SET username = :username, email = :email, password_hash = :password_hash, updated = NOW() WHERE id = :id"
         );
         
         $stmt->bindParam(':id', $user->id);
@@ -94,7 +94,7 @@ class PdoUserRepository implements UserRepository
 
     public function delete(int $id): bool
     {
-        $stmt = $this->connection->prepare("DELETE FROM users WHERE id = :id");
+        $stmt = $this->connection->prepare("DELETE FROM user WHERE id = :id");
         $stmt->bindParam(':id', $id);
         
         return $stmt->execute();

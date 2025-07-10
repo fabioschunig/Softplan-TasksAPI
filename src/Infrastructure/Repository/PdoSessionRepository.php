@@ -18,7 +18,7 @@ class PdoSessionRepository
     public function create(int $userId, string $sessionToken, DateTime $expiresAt): UserSession
     {
         $stmt = $this->connection->prepare(
-            "INSERT INTO user_sessions (user_id, session_token, expires_at, created) VALUES (:user_id, :session_token, :expires_at, NOW())"
+            "INSERT INTO user_session (user_id, session_token, expires_at, created) VALUES (:user_id, :session_token, :expires_at, NOW())"
         );
         
         $expiresAtFormatted = $expiresAt->format('Y-m-d H:i:s');
@@ -36,7 +36,7 @@ class PdoSessionRepository
 
     public function findByToken(string $sessionToken): UserSession|null
     {
-        $stmt = $this->connection->prepare("SELECT * FROM user_sessions WHERE session_token = :session_token");
+        $stmt = $this->connection->prepare("SELECT * FROM user_session WHERE session_token = :session_token");
         $stmt->bindParam(':session_token', $sessionToken);
         $stmt->execute();
         
@@ -51,7 +51,7 @@ class PdoSessionRepository
 
     public function findById(int $id): UserSession|null
     {
-        $stmt = $this->connection->prepare("SELECT * FROM user_sessions WHERE id = :id");
+        $stmt = $this->connection->prepare("SELECT * FROM user_session WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
         
@@ -66,7 +66,7 @@ class PdoSessionRepository
 
     public function deleteByToken(string $sessionToken): bool
     {
-        $stmt = $this->connection->prepare("DELETE FROM user_sessions WHERE session_token = :session_token");
+        $stmt = $this->connection->prepare("DELETE FROM user_session WHERE session_token = :session_token");
         $stmt->bindParam(':session_token', $sessionToken);
         
         return $stmt->execute();
@@ -74,7 +74,7 @@ class PdoSessionRepository
 
     public function delete(int $id): bool
     {
-        $stmt = $this->connection->prepare("DELETE FROM user_sessions WHERE id = :id");
+        $stmt = $this->connection->prepare("DELETE FROM user_session WHERE id = :id");
         $stmt->bindParam(':id', $id);
         
         return $stmt->execute();
@@ -82,7 +82,7 @@ class PdoSessionRepository
 
     public function deleteExpired(): int
     {
-        $stmt = $this->connection->prepare("DELETE FROM user_sessions WHERE expires_at < NOW()");
+        $stmt = $this->connection->prepare("DELETE FROM user_session WHERE expires_at < NOW()");
         $stmt->execute();
         
         return $stmt->rowCount();

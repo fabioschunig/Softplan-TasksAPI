@@ -29,7 +29,7 @@ ALTER TABLE `task`
   ADD CONSTRAINT `fk_task_project` FOREIGN KEY (`project_id`)
   REFERENCES `project` (`id`);
 
-CREATE TABLE `users` (
+CREATE TABLE `user` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `username` VARCHAR(31) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE,
   `email` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE,
@@ -41,7 +41,7 @@ CREATE TABLE `users` (
   INDEX `idx_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `user_sessions` (
+CREATE TABLE `user_session` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` INT UNSIGNED NOT NULL,
   `session_token` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE,
@@ -50,12 +50,12 @@ CREATE TABLE `user_sessions` (
   PRIMARY KEY (`id`),
   INDEX `idx_session_token` (`session_token`),
   INDEX `idx_user_id` (`user_id`),
-  CONSTRAINT `fk_session_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk_session_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Inserir usuário administrador padrão
 -- Senha padrão: adm!123 (hasheada com bcrypt)
-INSERT INTO `users` (`username`, `email`, `password_hash`) VALUES 
+INSERT INTO `user` (`username`, `email`, `password_hash`) VALUES 
 ('admin', 'admin@softplan.com', '$2y$10$WbQgNwZqDHWdQ9y3SLMD9.OvRWh6hOt2rKQi46WZCsdnlCAQ8fW22');
 
 commit;
