@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ProjectManager from './ProjectManager';
 import TaskManager from './TaskManager';
 import TaskReport from './TaskReport';
+import UserManager from './UserManager';
 import './Auth.css';
 
 const Dashboard = ({ user, onLogout }) => {
@@ -50,7 +51,7 @@ const Dashboard = ({ user, onLogout }) => {
       <div className="dashboard-header">
         <h1>Softplan Tasks</h1>
         <div className="user-info">
-          <span>Welcome, {user?.username || 'User'}!</span>
+          <span>Welcome, {user?.username || 'User'}! ({user?.role || 'user'})</span>
           <button onClick={handleLogout} className="logout-button">
             Logout
           </button>
@@ -76,12 +77,21 @@ const Dashboard = ({ user, onLogout }) => {
         >
           Report
         </button>
+        {user?.role === 'admin' && (
+          <button 
+            className={`tab-button ${activeTab === 'users' ? 'active' : ''}`}
+            onClick={() => setActiveTab('users')}
+          >
+            Users
+          </button>
+        )}
       </div>
 
       <div className="dashboard-content">
-        {activeTab === 'tasks' && <TaskManager initialAction={initialTaskAction} />}
-        {activeTab === 'projects' && <ProjectManager />}
+        {activeTab === 'tasks' && <TaskManager initialAction={initialTaskAction} user={user} />}
+        {activeTab === 'projects' && <ProjectManager user={user} />}
         {activeTab === 'report' && <TaskReport onNewTask={handleRequestNewTask} onEditTask={handleRequestEditTask} />}
+        {activeTab === 'users' && user?.role === 'admin' && <UserManager token={localStorage.getItem('authToken')} />}
       </div>
     </div>
   );

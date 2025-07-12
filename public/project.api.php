@@ -7,6 +7,7 @@ use SoftplanTasksApi\Infrastructure\Repository\PdoSessionRepository;
 use SoftplanTasksApi\Application\Service\ProjectService;
 use SoftplanTasksApi\Application\Service\AuthService;
 use SoftplanTasksApi\Infrastructure\Middleware\AuthMiddleware;
+use SoftplanTasksApi\Infrastructure\Middleware\AuthorizationMiddleware;
 
 require_once '../vendor/autoload.php';
 
@@ -222,7 +223,11 @@ try {
             break;
             
         case 'POST':
-            // POST /project.api.php - Create new project
+            // POST /project.api.php - Create new project (Admin only)
+            if (!AuthorizationMiddleware::canCreateProject($user)) {
+                handleError('Access denied. Admin privileges required to create projects.', 403);
+            }
+            
             try {
                 $input = json_decode(file_get_contents('php://input'), true);
                 
@@ -243,7 +248,11 @@ try {
             break;
             
         case 'PUT':
-            // PUT /project.api.php/123 - Update specific project
+            // PUT /project.api.php/123 - Update specific project (Admin only)
+            if (!AuthorizationMiddleware::canEditProject($user)) {
+                handleError('Access denied. Admin privileges required to edit projects.', 403);
+            }
+            
             if (!$projectId) {
                 handleError('Project ID is required for update', 400);
             }
@@ -268,7 +277,11 @@ try {
             break;
             
         case 'DELETE':
-            // DELETE /project.api.php/123 - Delete specific project
+            // DELETE /project.api.php/123 - Delete specific project (Admin only)
+            if (!AuthorizationMiddleware::canDeleteProject($user)) {
+                handleError('Access denied. Admin privileges required to delete projects.', 403);
+            }
+            
             if (!$projectId) {
                 handleError('Project ID is required for deletion', 400);
             }

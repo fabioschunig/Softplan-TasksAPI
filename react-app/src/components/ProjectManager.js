@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Auth.css';
 
-const ProjectManager = () => {
+const ProjectManager = ({ user }) => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -184,16 +184,18 @@ const ProjectManager = () => {
     <div className="project-manager">
       <div className="project-header">
         <h2>Project Management</h2>
-        <button 
-          onClick={() => {
-            setShowCreateForm(!showCreateForm);
-            setEditingProject(null);
-            setFormData({ description: '' });
-          }}
-          className="create-button"
-        >
-          {showCreateForm ? 'Cancel' : 'New Project'}
-        </button>
+        {user?.role === 'admin' && (
+          <button 
+            onClick={() => {
+              setShowCreateForm(!showCreateForm);
+              setEditingProject(null);
+              setFormData({ description: '' });
+            }}
+            className="create-button"
+          >
+            {showCreateForm ? 'Cancel' : 'New Project'}
+          </button>
+        )}
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -223,7 +225,7 @@ const ProjectManager = () => {
       </form>
 
       {/* Create Form */}
-      {showCreateForm && (
+      {user?.role === 'admin' && showCreateForm && (
         <form onSubmit={handleCreateProject} className="project-form">
           <h3>Create New Project</h3>
           <div className="form-group">
@@ -253,7 +255,7 @@ const ProjectManager = () => {
       )}
 
       {/* Edit Form */}
-      {editingProject && (
+      {user?.role === 'admin' && editingProject && (
         <form onSubmit={handleUpdateProject} className="project-form">
           <h3>Edit Project</h3>
           <div className="form-group">
@@ -303,19 +305,25 @@ const ProjectManager = () => {
                   </div>
                 </div>
                 <div className="project-actions">
-                  <button 
-                    onClick={() => startEdit(project)}
-                    className="edit-button"
-                    disabled={editingProject?.id === project.id}
-                  >
-                    Edit
-                  </button>
-                  <button 
-                    onClick={() => handleDeleteProject(project.id)}
-                    className="delete-button"
-                  >
-                    Delete
-                  </button>
+                  {user?.role === 'admin' ? (
+                    <>
+                      <button 
+                        onClick={() => startEdit(project)}
+                        className="edit-button"
+                        disabled={editingProject?.id === project.id}
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteProject(project.id)}
+                        className="delete-button"
+                      >
+                        Delete
+                      </button>
+                    </>
+                  ) : (
+                    <span className="view-only">View Only</span>
+                  )}
                 </div>
               </div>
             ))}

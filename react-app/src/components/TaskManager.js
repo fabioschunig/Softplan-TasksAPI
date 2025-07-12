@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './Auth.css'; // Reusing the same CSS for consistency
 
-const TaskManager = ({ initialAction }) => {
+const TaskManager = ({ initialAction, user }) => {
   const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -283,9 +283,11 @@ const TaskManager = ({ initialAction }) => {
     <div className="project-manager">
       <div className="project-header">
         <h2>Task Management</h2>
-        <button onClick={() => { setShowCreateForm(!showCreateForm); setEditingTask(null); }} className="create-button">
-          {showCreateForm ? 'Cancel' : 'New Task'}
-        </button>
+        {user?.role === 'admin' && (
+          <button onClick={() => { setShowCreateForm(!showCreateForm); setEditingTask(null); }} className="create-button">
+            {showCreateForm ? 'Cancel' : 'New Task'}
+          </button>
+        )}
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -301,8 +303,8 @@ const TaskManager = ({ initialAction }) => {
         <button type="submit" className="search-button">Search</button>
       </form>
 
-      {showCreateForm && renderForm()}
-      {editingTask && renderForm()}
+      {user?.role === 'admin' && showCreateForm && renderForm()}
+      {user?.role === 'admin' && editingTask && renderForm()}
 
       <div className="projects-container">
         {tasks.length === 0 ? (
@@ -327,8 +329,14 @@ const TaskManager = ({ initialAction }) => {
                    </div>
                 </div>
                 <div className="project-actions">
-                  <button onClick={() => startEdit(task)} className="edit-button">Edit</button>
-                  <button onClick={() => handleDeleteTask(task.id)} className="delete-button">Delete</button>
+                  {user?.role === 'admin' ? (
+                    <>
+                      <button onClick={() => startEdit(task)} className="edit-button">Edit</button>
+                      <button onClick={() => handleDeleteTask(task.id)} className="delete-button">Delete</button>
+                    </>
+                  ) : (
+                    <span className="view-only">View Only</span>
+                  )}
                 </div>
               </div>
             ))}

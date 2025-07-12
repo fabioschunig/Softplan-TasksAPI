@@ -7,6 +7,7 @@ use SoftplanTasksApi\Infrastructure\Repository\PdoSessionRepository;
 use SoftplanTasksApi\Application\Service\TaskService;
 use SoftplanTasksApi\Application\Service\AuthService;
 use SoftplanTasksApi\Infrastructure\Middleware\AuthMiddleware;
+use SoftplanTasksApi\Infrastructure\Middleware\AuthorizationMiddleware;
 
 require_once '../vendor/autoload.php';
 
@@ -201,6 +202,11 @@ try {
             break;
 
         case 'POST':
+            // Create task (Admin only)
+            if (!AuthorizationMiddleware::canCreateTask($user)) {
+                handleError('Access denied. Admin privileges required to create tasks.', 403);
+            }
+            
             $input = json_decode(file_get_contents('php://input'), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 handleError('Invalid JSON input', 400);
@@ -214,6 +220,11 @@ try {
             break;
 
         case 'PUT':
+            // Update task (Admin only)
+            if (!AuthorizationMiddleware::canEditTask($user)) {
+                handleError('Access denied. Admin privileges required to edit tasks.', 403);
+            }
+            
             if (!$taskId) {
                 handleError('Task ID is required for update', 400);
             }
@@ -230,6 +241,11 @@ try {
             break;
 
         case 'DELETE':
+            // Delete task (Admin only)
+            if (!AuthorizationMiddleware::canDeleteTask($user)) {
+                handleError('Access denied. Admin privileges required to delete tasks.', 403);
+            }
+            
             if (!$taskId) {
                 handleError('Task ID is required for deletion', 400);
             }

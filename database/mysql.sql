@@ -34,11 +34,13 @@ CREATE TABLE `user` (
   `username` VARCHAR(31) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE,
   `email` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL UNIQUE,
   `password_hash` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` ENUM('admin', 'user') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'user',
   `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   `updated` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `idx_username` (`username`),
-  INDEX `idx_email` (`email`)
+  INDEX `idx_email` (`email`),
+  INDEX `idx_role` (`role`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `user_session` (
@@ -55,7 +57,7 @@ CREATE TABLE `user_session` (
 
 -- Inserir usuário administrador padrão
 -- Senha padrão: adm!123 (hasheada com bcrypt)
-INSERT INTO `user` (`username`, `email`, `password_hash`) VALUES 
-('admin', 'admin@softplan.com', '$2y$10$WbQgNwZqDHWdQ9y3SLMD9.OvRWh6hOt2rKQi46WZCsdnlCAQ8fW22');
+INSERT INTO `user` (`username`, `email`, `password_hash`, `role`) VALUES 
+('admin', 'admin@softplan.com', '$2y$10$WbQgNwZqDHWdQ9y3SLMD9.OvRWh6hOt2rKQi46WZCsdnlCAQ8fW22', 'admin');
 
 commit;

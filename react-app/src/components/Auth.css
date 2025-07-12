@@ -737,3 +737,175 @@
   outline: none;
   border-color: #667eea;
 }
+
+/* User Manager Styles */
+.user-manager {
+  padding: 1rem;
+}
+
+.user-manager-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.user-manager-header h2 {
+  color: #333;
+  margin: 0;
+}
+
+.create-user-btn {
+  padding: 0.75rem 1.5rem;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.create-user-btn:hover {
+  background: #218838;
+}
+
+.create-user-form {
+  background: #f8f9fa;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border: 1px solid #e1e5e9;
+}
+
+.create-user-form h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.users-list h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.user-card {
+  background: white;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.user-info h4 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.user-email {
+  color: #666;
+  margin: 0.25rem 0;
+}
+
+.user-role {
+  margin: 0.5rem 0;
+}
+
+.role-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.role-badge.admin {
+  background: #dc3545;
+  color: white;
+}
+
+.role-badge.user {
+  background: #6c757d;
+  color: white;
+}
+
+.user-created {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0.5rem 0 0 0;
+}
+
+.user-actions {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e1e5e9;
+}
+
+.delete-btn {
+  padding: 0.5rem 1rem;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+  background: #c82333;
+}
+
+.admin-protected {
+  color: #28a745;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* View Only Styles */
+.view-only {
+  color: #6c757d;
+  font-style: italic;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #e1e5e9;
+}
+
+/* Loading styles */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+/* Mobile responsiveness for user management */
+@media (max-width: 768px) {
+  .users-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .user-manager-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .create-user-btn {
+    width: 100%;
+  }
+}

@@ -36,14 +36,15 @@ class AuthService
             'user' => [
                 'id' => $user->id,
                 'username' => $user->username,
-                'email' => $user->email
+                'email' => $user->email,
+                'role' => $user->role
             ],
             'token' => $session->sessionToken,
             'expires_at' => $session->expiresAt->format('Y-m-d H:i:s')
         ];
     }
 
-    public function register(string $username, string $email, string $password): array|null
+    public function register(string $username, string $email, string $password, string $role = 'user'): array|null
     {
         
         // Validate username length
@@ -63,7 +64,7 @@ class AuthService
 
         $passwordHash = User::hashPassword($password);
 
-        $user = $this->userRepository->create($username, $email, $passwordHash);
+        $user = $this->userRepository->create($username, $email, $passwordHash, $role);
 
         // Auto-login after registration
         return $this->login($username, $password);
@@ -91,6 +92,64 @@ class AuthService
     public function cleanExpiredSessions(): int
     {
         return $this->sessionRepository->deleteExpired();
+    }
+
+    public function getAllUsers(): array
+    {
+        $users = $this->userRepository->findAll();
+        $result = [];
+        
+        foreach ($users as $user) {
+            $result[] = [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role,
+                'created' => $user->created->format('Y-m-d H:i:s')
+            ];
+        }
+        
+        return $result;
+    }
+
+    public function createUser(string $username, string $email, string $password, string $role = 'user'): array|null
+    {
+        // Validate username length
+        if (strlen($username) > 31 || strlen($username) < 3) {
+            return null;
+        }
+
+        // Check if user already exists
+        if ($this->userRepository->findByUsername($username) || $this->userRepository->findByEmail($email)) {
+            return null;
+        }
+
+        // Validate password strength
+        if (!$this->isPasswordStrong($password)) {
+            return null;
+        }
+
+        $passwordHash = User::hashPassword($password);
+        $user = $this->userRepository->create($username, $email, $passwordHash, $role);
+
+        return [
+            'id' => $user->id,
+            'username' => $user->username,
+            'email' => $user->email,
+            'role' => $user->role,
+            'created' => $user->created->format('Y-m-d H:i:s')
+        ];
+    }
+
+    public function deleteUser(int $userId): bool
+    {
+        // Prevent deletion of admin user
+        $user = $this->userRepository->findById($userId);
+        if ($user && $user->isAdmin()) {
+            return false;
+        }
+        
+        return $this->userRepository->delete($userId);
     }
 
     private function isPasswordStrong(string $password): bool
