@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
+import { API_URLS } from './config/api';
 import './App.css';
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
 
     if (token && savedUser) {
       try {
-        const response = await fetch('/auth.api.php?action=validate', {
+        const response = await fetch(API_URLS.VALIDATE, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -28,7 +29,7 @@ function App() {
         if (response.ok) {
           const data = await response.json();
           if (data.success) {
-            setUser(data.user);
+            setUser(data.data.user);
             setIsAuthenticated(true);
           } else {
             localStorage.removeItem('authToken');

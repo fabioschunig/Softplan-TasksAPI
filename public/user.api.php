@@ -2,7 +2,8 @@
 
 require_once '../vendor/autoload.php';
 
-use SoftplanTasksApi\Infrastructure\Persistence\DatabaseConnection;
+use SoftplanTasksApi\Infrastructure\Persistence\PdoConnectionCreator;
+use SoftplanTasksApi\Application\Config\ConfigAppEnvFile;
 use SoftplanTasksApi\Infrastructure\Repository\PdoUserRepository;
 use SoftplanTasksApi\Infrastructure\Repository\PdoSessionRepository;
 use SoftplanTasksApi\Application\Service\AuthService;
@@ -22,13 +23,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 try {
-    $pdo = DatabaseConnection::getConnection();
+    $config = new ConfigAppEnvFile();
+    $config->loadEnv();
+    
+    $pdo = PdoConnectionCreator::createConnection(
+        $config->getHost(),
+        $config->getDBName(),
+        $config->getUsername(),
+        $config->getPassword()
+    );
     $userRepository = new PdoUserRepository($pdo);
     $sessionRepository = new PdoSessionRepository($pdo);
     $authService = new AuthService($userRepository, $sessionRepository);
 
     // Authenticate user
-    $user = AuthMiddleware::authenticate($authService);
+    $user = AuthMiddleware::authenticateStatic($authService);
     if (!$user) {
         http_response_code(401);
         echo json_encode(['error' => 'Unauthorized']);

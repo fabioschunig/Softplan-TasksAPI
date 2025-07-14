@@ -51,4 +51,16 @@ class AuthMiddleware
         header('Content-Type: application/json');
         echo json_encode(['error' => $message]);
     }
+
+    public static function authenticateStatic(AuthService $authService): User|null
+    {
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
+        
+        if (!$authHeader || !str_starts_with($authHeader, 'Bearer ')) {
+            return null;
+        }
+
+        $token = str_replace('Bearer ', '', $authHeader);
+        return $authService->validateSession($token);
+    }
 }

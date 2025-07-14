@@ -3,6 +3,7 @@ import ProjectManager from './ProjectManager';
 import TaskManager from './TaskManager';
 import TaskReport from './TaskReport';
 import UserManager from './UserManager';
+import { API_URLS } from '../config/api';
 import './Auth.css';
 
 const Dashboard = ({ user, onLogout }) => {
@@ -29,7 +30,7 @@ const Dashboard = ({ user, onLogout }) => {
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem('authToken');
-      await fetch('/auth.api.php?action=logout', {
+      await fetch(API_URLS.LOGOUT, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

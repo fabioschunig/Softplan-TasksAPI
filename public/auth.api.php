@@ -218,7 +218,8 @@ try {
                                 'user' => [
                                     'id' => $user->id,
                                     'username' => $user->username,
-                                    'email' => $user->email
+                                    'email' => $user->email,
+                                    'role' => $user->role
                                 ]
                             ]);
                         } else {

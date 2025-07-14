@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_URLS } from '../config/api';
 import './Auth.css';
 
 const UserManager = ({ token }) => {
@@ -20,7 +21,7 @@ const UserManager = ({ token }) => {
     const fetchUsers = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:8000/user.api.php', {
+            const response = await fetch(API_URLS.USERS, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -52,7 +53,7 @@ const UserManager = ({ token }) => {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/user.api.php', {
+            const response = await fetch(API_URLS.USERS, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -82,7 +83,7 @@ const UserManager = ({ token }) => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8000/user.api.php/${userId}`, {
+            const response = await fetch(`${API_URLS.USERS}/${userId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`,

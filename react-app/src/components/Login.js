@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_URLS } from '../config/api';
 import './Auth.css';
 
 const Login = ({ onLogin }) => {
@@ -22,7 +23,7 @@ const Login = ({ onLogin }) => {
     setError('');
 
     try {
-      const response = await fetch('/auth.api.php?action=login', {
+      const response = await fetch(API_URLS.LOGIN, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
