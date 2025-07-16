@@ -91,7 +91,7 @@ const Dashboard = ({ user, onLogout }) => {
       <div className="dashboard-content">
         {activeTab === 'tasks' && <TaskManager initialAction={initialTaskAction} user={user} />}
         {activeTab === 'projects' && <ProjectManager user={user} />}
-        {activeTab === 'report' && <TaskReport onNewTask={handleRequestNewTask} onEditTask={handleRequestEditTask} />}
+        {activeTab === 'report' && <TaskReport onNewTask={handleRequestNewTask} onEditTask={handleRequestEditTask} user={user} />}
         {activeTab === 'users' && user?.role === 'admin' && <UserManager token={localStorage.getItem('authToken')} />}
       </div>
     </div>

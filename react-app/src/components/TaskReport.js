@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { API_URLS } from '../config/api';
 import './Auth.css';
 
-const TaskReport = ({ onNewTask, onEditTask }) => {
+const TaskReport = ({ onNewTask, onEditTask, user }) => {
   const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,8 +35,8 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
       if (endDate) params.append('end_date', endDate.toISOString().split('T')[0]);
       
       const url = params.toString() 
-        ? `/task.api.php?${params.toString()}`
-        : '/task.api.php';
+        ? `${API_URLS.TASKS}?${params.toString()}`
+        : API_URLS.TASKS;
         
       const response = await fetch(url, { headers: getAuthHeaders() });
 
@@ -56,7 +57,7 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
 
   const fetchProjects = async () => {
     try {
-      const response = await fetch('/project.api.php', { headers: getAuthHeaders() });
+      const response = await fetch(API_URLS.PROJECTS, { headers: getAuthHeaders() });
       if (response.ok) {
         const result = await response.json();
         setProjects(result.data || []);
@@ -70,7 +71,7 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
     if (!window.confirm('Are you sure you want to delete this task?')) return;
 
     try {
-      const response = await fetch(`/task.api.php/${taskId}`, {
+      const response = await fetch(`${API_URLS.TASKS}/${taskId}`, {
         method: 'DELETE',
         headers: getAuthHeaders()
       });
@@ -170,9 +171,11 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
     <div className="task-report">
             <div className="project-header">
         <h2>Tasks Report</h2>
-        <button onClick={onNewTask} className="create-button">
-          New Task
-        </button>
+        {user?.role === 'admin' && (
+          <button onClick={onNewTask} className="create-button">
+            New Task
+          </button>
+        )}
       </div>
 
       {error && <div className="error-message">{error}</div>}
@@ -232,7 +235,7 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
               <th onClick={() => requestSort('tags')}>Tags{getSortIndicator('tags')}</th>
               <th onClick={() => requestSort('started')}>Start Date{getSortIndicator('started')}</th>
               <th onClick={() => requestSort('finished')}>End Date{getSortIndicator('finished')}</th>
-              <th>Actions</th>
+              {user?.role === 'admin' && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -245,16 +248,18 @@ const TaskReport = ({ onNewTask, onEditTask }) => {
                   <td>{getStatusText(task.status)}</td>
                   <td>{task.tags || 'N/A'}</td>
                   <td>{formatDate(task.started)}</td>
-                                    <td>{formatDate(task.finished)}</td>
-                  <td className="report-actions">
-                    <button onClick={() => onEditTask(task.id)} className="edit-button small-button">Edit</button>
-                    <button onClick={() => handleDeleteTask(task.id)} className="delete-button small-button">Delete</button>
-                  </td>
+                  <td>{formatDate(task.finished)}</td>
+                  {user?.role === 'admin' && (
+                    <td className="report-actions">
+                      <button onClick={() => onEditTask(task.id)} className="edit-button small-button">Edit</button>
+                      <button onClick={() => handleDeleteTask(task.id)} className="delete-button small-button">Delete</button>
+                    </td>
+                  )}
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="no-results">No tasks found.</td>
+                <td colSpan={user?.role === 'admin' ? "8" : "7"} className="no-results">No tasks found.</td>
               </tr>
             )}
           </tbody>
