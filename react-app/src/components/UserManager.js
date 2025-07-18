@@ -35,10 +35,10 @@ const UserManager = ({ token }) => {
                 setError('');
             } else {
                 const errorData = await response.json();
-                setError(errorData.error || 'Failed to fetch users');
+                setError(errorData.error || 'Falha ao buscar usuários');
             }
         } catch (err) {
-            setError('Network error: ' + err.message);
+            setError('Erro de rede: ' + err.message);
         } finally {
             setLoading(false);
         }
@@ -48,7 +48,7 @@ const UserManager = ({ token }) => {
         e.preventDefault();
         
         if (!newUser.username || !newUser.email || !newUser.password) {
-            setError('All fields are required');
+            setError('Todos os campos são obrigatórios');
             return;
         }
 
@@ -70,15 +70,15 @@ const UserManager = ({ token }) => {
                 setError('');
             } else {
                 const errorData = await response.json();
-                setError(errorData.error || 'Failed to create user');
+                setError(errorData.error || 'Falha ao criar usuário');
             }
         } catch (err) {
-            setError('Network error: ' + err.message);
+            setError('Erro de rede: ' + err.message);
         }
     };
 
     const handleDeleteUser = async (userId, username) => {
-        if (!window.confirm(`Are you sure you want to delete user "${username}"?`)) {
+        if (!window.confirm(`Você tem certeza que deseja excluir o usuário "${username}"?`)) {
             return;
         }
 
@@ -96,10 +96,10 @@ const UserManager = ({ token }) => {
                 setError('');
             } else {
                 const errorData = await response.json();
-                setError(errorData.error || 'Failed to delete user');
+                setError(errorData.error || 'Falha ao excluir usuário');
             }
         } catch (err) {
-            setError('Network error: ' + err.message);
+            setError('Erro de rede: ' + err.message);
         }
     };
 
@@ -112,18 +112,18 @@ const UserManager = ({ token }) => {
     };
 
     if (loading) {
-        return <div className="loading">Loading users...</div>;
+        return <div className="loading">Carregando usuários...</div>;
     }
 
     return (
         <div className="user-manager">
             <div className="user-manager-header">
-                <h2>User Management</h2>
+                <h2>Gerenciamento de Usuários</h2>
                 <button 
                     className="create-user-btn"
                     onClick={() => setShowCreateForm(!showCreateForm)}
                 >
-                    {showCreateForm ? 'Cancel' : 'Create New User'}
+                    {showCreateForm ? 'Cancelar' : 'Criar Novo Usuário'}
                 </button>
             </div>
 
@@ -131,60 +131,60 @@ const UserManager = ({ token }) => {
 
             {showCreateForm && (
                 <div className="create-user-form">
-                    <h3>Create New User</h3>
+                    <h3>Criar Novo Usuário</h3>
                     <form onSubmit={handleCreateUser}>
                         <div className="form-group">
-                            <label>Username:</label>
+                            <label>Nome de Usuário:</label>
                             <input
                                 type="text"
                                 name="username"
                                 value={newUser.username}
                                 onChange={handleInputChange}
-                                placeholder="Enter username (3-31 characters)"
+                                placeholder="Digite o nome de usuário (3-31 caracteres)"
                                 required
                             />
                         </div>
                         <div className="form-group">
-                            <label>Email:</label>
+                            <label>E-mail:</label>
                             <input
                                 type="email"
                                 name="email"
                                 value={newUser.email}
                                 onChange={handleInputChange}
-                                placeholder="Enter email address"
+                                placeholder="Digite o endereço de e-mail"
                                 required
                             />
                         </div>
                         <div className="form-group">
-                            <label>Password:</label>
+                            <label>Senha:</label>
                             <input
                                 type="password"
                                 name="password"
                                 value={newUser.password}
                                 onChange={handleInputChange}
-                                placeholder="Enter password (min 8 chars, letters + numbers)"
+                                placeholder="Digite a senha (mín. 8 caracteres, letras + números)"
                                 required
                             />
                         </div>
                         <div className="form-group">
-                            <label>Role:</label>
+                            <label>Função:</label>
                             <select
                                 name="role"
                                 value={newUser.role}
                                 onChange={handleInputChange}
                             >
-                                <option value="user">User</option>
-                                <option value="admin">Admin</option>
+                                <option value="user">Usuário</option>
+                                <option value="admin">Administrador</option>
                             </select>
                         </div>
                         <div className="form-actions">
-                            <button type="submit" className="submit-btn">Create User</button>
+                            <button type="submit" className="submit-btn">Criar Usuário</button>
                             <button 
                                 type="button" 
                                 className="cancel-btn"
                                 onClick={() => setShowCreateForm(false)}
                             >
-                                Cancel
+                                Cancelar
                             </button>
                         </div>
                     </form>
@@ -192,9 +192,9 @@ const UserManager = ({ token }) => {
             )}
 
             <div className="users-list">
-                <h3>Existing Users ({users.length})</h3>
+                <h3>Usuários Existentes ({users.length})</h3>
                 {users.length === 0 ? (
-                    <p>No users found.</p>
+                    <p>Nenhum usuário encontrado.</p>
                 ) : (
                     <div className="users-grid">
                         {users.map(user => (
@@ -208,7 +208,7 @@ const UserManager = ({ token }) => {
                                         </span>
                                     </p>
                                     <p className="user-created">
-                                        Created: {new Date(user.created).toLocaleDateString()}
+                                        Criado em: {new Date(user.created).toLocaleDateString()}
                                     </p>
                                 </div>
                                 <div className="user-actions">
@@ -217,11 +217,11 @@ const UserManager = ({ token }) => {
                                             className="delete-btn"
                                             onClick={() => handleDeleteUser(user.id, user.username)}
                                         >
-                                            Delete
+                                            Excluir
                                         </button>
                                     )}
                                     {user.role === 'admin' && (
-                                        <span className="admin-protected">Protected</span>
+                                        <span className="admin-protected">Protegido</span>
                                     )}
                                 </div>
                             </div>

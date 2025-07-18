@@ -34,13 +34,13 @@ const ProjectManager = ({ user }) => {
         setProjects(result.data || []);
         setError('');
       } else if (response.status === 401) {
-        setError('Authentication required. Please login again.');
+        setError('Autenticação necessária. Por favor, faça login novamente.');
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Failed to fetch projects');
+        setError(errorData.error || 'Falha ao buscar projetos');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError('Erro de rede. Por favor, tente novamente.');
       console.error('Fetch projects error:', err);
     } finally {
       setLoading(false);
@@ -51,7 +51,7 @@ const ProjectManager = ({ user }) => {
     e.preventDefault();
     
     if (!formData.description.trim()) {
-      setError('Description is required');
+      setError('A descrição é obrigatória');
       return;
     }
 
@@ -74,10 +74,10 @@ const ProjectManager = ({ user }) => {
         setError('');
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Failed to create project');
+        setError(errorData.error || 'Falha ao criar projeto');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError('Erro de rede. Por favor, tente novamente.');
       console.error('Create project error:', err);
     }
   };
@@ -86,7 +86,7 @@ const ProjectManager = ({ user }) => {
     e.preventDefault();
     
     if (!formData.description.trim()) {
-      setError('Description is required');
+      setError('A descrição é obrigatória');
       return;
     }
 
@@ -109,16 +109,16 @@ const ProjectManager = ({ user }) => {
         setError('');
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Failed to update project');
+        setError(errorData.error || 'Falha ao atualizar projeto');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError('Erro de rede. Por favor, tente novamente.');
       console.error('Update project error:', err);
     }
   };
 
   const handleDeleteProject = async (projectId) => {
-    if (!window.confirm('Are you sure you want to delete this project?')) {
+    if (!window.confirm('Você tem certeza que deseja excluir este projeto?')) {
       return;
     }
 
@@ -137,10 +137,10 @@ const ProjectManager = ({ user }) => {
         setError('');
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Failed to delete project');
+        setError(errorData.error || 'Falha ao excluir projeto');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError('Erro de rede. Por favor, tente novamente.');
       console.error('Delete project error:', err);
     }
   };
@@ -175,7 +175,7 @@ const ProjectManager = ({ user }) => {
   if (loading) {
     return (
       <div className="project-manager">
-        <h2>Loading projects...</h2>
+        <h2>Carregando projetos...</h2>
       </div>
     );
   }
@@ -183,7 +183,7 @@ const ProjectManager = ({ user }) => {
   return (
     <div className="project-manager">
       <div className="project-header">
-        <h2>Project Management</h2>
+        <h2>Gerenciamento de Projetos</h2>
         {user?.role === 'admin' && (
           <button 
             onClick={() => {
@@ -193,7 +193,7 @@ const ProjectManager = ({ user }) => {
             }}
             className="create-button"
           >
-            {showCreateForm ? 'Cancel' : 'New Project'}
+            {showCreateForm ? 'Cancelar' : 'Novo Projeto'}
           </button>
         )}
       </div>
@@ -204,12 +204,12 @@ const ProjectManager = ({ user }) => {
       <form onSubmit={handleSearch} className="search-form">
         <input
           type="text"
-          placeholder="Search projects..."
+          placeholder="Buscar projetos..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
         />
-        <button type="submit" className="search-button">Search</button>
+        <button type="submit" className="search-button">Buscar</button>
         {searchTerm && (
           <button 
             type="button" 
@@ -219,7 +219,7 @@ const ProjectManager = ({ user }) => {
             }}
             className="clear-search-button"
           >
-            Clear
+            Limpar
           </button>
         )}
       </form>
@@ -227,28 +227,28 @@ const ProjectManager = ({ user }) => {
       {/* Create Form */}
       {user?.role === 'admin' && showCreateForm && (
         <form onSubmit={handleCreateProject} className="project-form">
-          <h3>Create New Project</h3>
+          <h3>Criar Novo Projeto</h3>
           <div className="form-group">
-            <label htmlFor="description">Description:</label>
+            <label htmlFor="description">Descrição:</label>
             <textarea
               id="description"
               value={formData.description}
               onChange={(e) => setFormData({ description: e.target.value })}
-              placeholder="Enter project description..."
+              placeholder="Digite a descrição do projeto..."
               maxLength="255"
               rows="3"
               required
             />
-            <small>{formData.description.length}/255 characters</small>
+            <small>{formData.description.length}/255 caracteres</small>
           </div>
           <div className="form-actions">
-            <button type="submit" className="submit-button">Create Project</button>
+            <button type="submit" className="submit-button">Criar Projeto</button>
             <button 
               type="button" 
               onClick={() => setShowCreateForm(false)}
               className="cancel-button"
             >
-              Cancel
+              Cancelar
             </button>
           </div>
         </form>
@@ -257,28 +257,28 @@ const ProjectManager = ({ user }) => {
       {/* Edit Form */}
       {user?.role === 'admin' && editingProject && (
         <form onSubmit={handleUpdateProject} className="project-form">
-          <h3>Edit Project</h3>
+          <h3>Editar Projeto</h3>
           <div className="form-group">
-            <label htmlFor="edit-description">Description:</label>
+            <label htmlFor="edit-description">Descrição:</label>
             <textarea
               id="edit-description"
               value={formData.description}
               onChange={(e) => setFormData({ description: e.target.value })}
-              placeholder="Enter project description..."
+              placeholder="Digite a descrição do projeto..."
               maxLength="255"
               rows="3"
               required
             />
-            <small>{formData.description.length}/255 characters</small>
+            <small>{formData.description.length}/255 caracteres</small>
           </div>
           <div className="form-actions">
-            <button type="submit" className="submit-button">Update Project</button>
+            <button type="submit" className="submit-button">Atualizar Projeto</button>
             <button 
               type="button" 
               onClick={cancelEdit}
               className="cancel-button"
             >
-              Cancel
+              Cancelar
             </button>
           </div>
         </form>
@@ -288,7 +288,7 @@ const ProjectManager = ({ user }) => {
       <div className="projects-container">
         {projects.length === 0 ? (
           <p className="no-projects">
-            {searchTerm ? 'No projects found matching your search.' : 'No projects found. Create your first project!'}
+            {searchTerm ? 'Nenhum projeto encontrado para sua busca.' : 'Nenhum projeto encontrado. Crie seu primeiro projeto!'}
           </p>
         ) : (
           <div className="projects-grid">
@@ -298,9 +298,9 @@ const ProjectManager = ({ user }) => {
                   <div className="project-id">#{project.id}</div>
                   <div className="project-description">{project.description}</div>
                   <div className="project-dates">
-                    <div><strong>Created:</strong> {formatDate(project.created)}</div>
+                    <div><strong>Criado:</strong> {formatDate(project.created)}</div>
                     {project.updated && (
-                      <div><strong>Updated:</strong> {formatDate(project.updated)}</div>
+                      <div><strong>Atualizado:</strong> {formatDate(project.updated)}</div>
                     )}
                   </div>
                 </div>
@@ -312,17 +312,17 @@ const ProjectManager = ({ user }) => {
                         className="edit-button"
                         disabled={editingProject?.id === project.id}
                       >
-                        Edit
+                        Editar
                       </button>
                       <button 
                         onClick={() => handleDeleteProject(project.id)}
                         className="delete-button"
                       >
-                        Delete
+                        Excluir
                       </button>
                     </>
                   ) : (
-                    <span className="view-only">View Only</span>
+                    <span className="view-only">Somente Leitura</span>
                   )}
                 </div>
               </div>

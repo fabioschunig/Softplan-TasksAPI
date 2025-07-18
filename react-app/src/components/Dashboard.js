@@ -50,11 +50,11 @@ const Dashboard = ({ user, onLogout }) => {
   return (
     <div className="dashboard">
       <div className="dashboard-header">
-        <h1>Softplan Tasks</h1>
+        <h1>Softplan Tarefas</h1>
         <div className="user-info">
-          <span>Welcome, {user?.username || 'User'}! ({user?.role || 'user'})</span>
+          <span>Bem-vindo(a), {user?.username || 'Usuário'}! ({user?.role || 'user'})</span>
           <button onClick={handleLogout} className="logout-button">
-            Logout
+            Sair
           </button>
         </div>
       </div>
@@ -64,26 +64,26 @@ const Dashboard = ({ user, onLogout }) => {
           className={`tab-button ${activeTab === 'tasks' ? 'active' : ''}`}
           onClick={() => setActiveTab('tasks')}
         >
-          Tasks
+          Tarefas
         </button>
         <button 
           className={`tab-button ${activeTab === 'projects' ? 'active' : ''}`}
           onClick={() => setActiveTab('projects')}
         >
-          Projects
+          Projetos
         </button>
         <button 
           className={`tab-button ${activeTab === 'report' ? 'active' : ''}`}
           onClick={() => setActiveTab('report')}
         >
-          Report
+          Relatório
         </button>
         {user?.role === 'admin' && (
           <button 
             className={`tab-button ${activeTab === 'users' ? 'active' : ''}`}
             onClick={() => setActiveTab('users')}
           >
-            Users
+            Usuários
           </button>
         )}
       </div>

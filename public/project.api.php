@@ -27,7 +27,7 @@ set_error_handler(function($severity, $message, $file, $line) {
         header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
-            'error' => 'Internal server error occurred',
+            'error' => 'Ocorreu um erro interno no servidor',
             'timestamp' => date('Y-m-d H:i:s')
         ]);
     }
@@ -44,7 +44,7 @@ set_exception_handler(function($exception) {
         header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
-            'error' => 'Internal server error occurred',
+            'error' => 'Ocorreu um erro interno no servidor',
             'timestamp' => date('Y-m-d H:i:s')
         ]);
     }
@@ -68,7 +68,7 @@ register_shutdown_function(function() {
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'error' => 'Fatal server error occurred',
+                'error' => 'Ocorreu um erro fatal no servidor',
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
         }
@@ -115,7 +115,7 @@ try {
     $config = new ConfigAppEnvFile;
     $config->loadEnv();
 } catch (Exception $e) {
-    handleError('Configuration error: ' . $e->getMessage(), 500);
+    handleError('Erro de configuração: ' . $e->getMessage(), 500);
 }
 
 try {
@@ -128,16 +128,16 @@ try {
     
     // Validate database connection
     if (!$pdoConnection) {
-        handleError('Database connection failed. Please check your database configuration.', 500);
+        handleError('Falha na conexão com o banco de dados. Por favor, verifique sua configuração.', 500);
     }
     
     // Test the connection with a simple query
     $pdoConnection->query('SELECT 1');
     
 } catch (PDOException $e) {
-    handleError('Database connection failed: ' . $e->getMessage(), 500);
+    handleError('Falha na conexão com o banco de dados: ' . $e->getMessage(), 500);
 } catch (Exception $e) {
-    handleError('Database setup error: ' . $e->getMessage(), 500);
+    handleError('Erro na configuração do banco de dados: ' . $e->getMessage(), 500);
 }
 
 try {
@@ -150,17 +150,17 @@ try {
     $authService = new AuthService($userRepository, $sessionRepository);
     $authMiddleware = new AuthMiddleware($authService);
 } catch (Exception $e) {
-    handleError('Service initialization error: ' . $e->getMessage(), 500);
+    handleError('Erro na inicialização do serviço: ' . $e->getMessage(), 500);
 }
 
 // Authenticate user for all requests
 try {
     $user = $authMiddleware->authenticate();
     if (!$user) {
-        handleError('Authentication required', 401);
+        handleError('Autenticação necessária', 401);
     }
 } catch (Exception $e) {
-    handleError('Authentication error: ' . $e->getMessage(), 401);
+    handleError('Erro de autenticação: ' . $e->getMessage(), 401);
 }
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -197,10 +197,10 @@ try {
                     if ($project) {
                         sendSuccess($project);
                     } else {
-                        handleError('Project not found', 404);
+                        handleError('Projeto não encontrado', 404);
                     }
                 } catch (Exception $e) {
-                    handleError('Error retrieving project: ' . $e->getMessage(), 500);
+                    handleError('Erro ao buscar projeto: ' . $e->getMessage(), 500);
                 }
             } else {
                 // GET /project.api.php - Get all projects or search
@@ -217,7 +217,7 @@ try {
                     
                     sendSuccess($projects);
                 } catch (Exception $e) {
-                    handleError('Error retrieving projects: ' . $e->getMessage(), 500);
+                    handleError('Erro ao buscar projetos: ' . $e->getMessage(), 500);
                 }
             }
             break;
@@ -225,14 +225,14 @@ try {
         case 'POST':
             // POST /project.api.php - Create new project (Admin only)
             if (!AuthorizationMiddleware::canCreateProject($user)) {
-                handleError('Access denied. Admin privileges required to create projects.', 403);
+                handleError('Acesso negado. Privilégios de administrador são necessários para criar projetos.', 403);
             }
             
             try {
                 $input = json_decode(file_get_contents('php://input'), true);
                 
                 if (!isset($input['description'])) {
-                    handleError('Description is required', 400);
+                    handleError('A descrição é obrigatória', 400);
                 }
                 
                 $project = $projectService->createProject($input['description']);
@@ -240,28 +240,28 @@ try {
                 if ($project) {
                     sendSuccess($project, 201);
                 } else {
-                    handleError('Failed to create project. Description cannot be empty or exceed 255 characters.', 400);
+                    handleError('Falha ao criar projeto. A descrição não pode ser vazia ou exceder 255 caracteres.', 400);
                 }
             } catch (Exception $e) {
-                handleError('Error creating project: ' . $e->getMessage(), 500);
+                handleError('Erro ao criar projeto: ' . $e->getMessage(), 500);
             }
             break;
             
         case 'PUT':
             // PUT /project.api.php/123 - Update specific project (Admin only)
             if (!AuthorizationMiddleware::canEditProject($user)) {
-                handleError('Access denied. Admin privileges required to edit projects.', 403);
+                handleError('Acesso negado. Privilégios de administrador são necessários para editar projetos.', 403);
             }
             
             if (!$projectId) {
-                handleError('Project ID is required for update', 400);
+                handleError('O ID do projeto é obrigatório para atualização', 400);
             }
             
             try {
                 $input = json_decode(file_get_contents('php://input'), true);
                 
                 if (!isset($input['description'])) {
-                    handleError('Description is required', 400);
+                    handleError('A descrição é obrigatória', 400);
                 }
                 
                 $project = $projectService->updateProject($projectId, $input['description']);
@@ -269,40 +269,40 @@ try {
                 if ($project) {
                     sendSuccess($project);
                 } else {
-                    handleError('Project not found or invalid description', 404);
+                    handleError('Projeto não encontrado ou descrição inválida', 404);
                 }
             } catch (Exception $e) {
-                handleError('Error updating project: ' . $e->getMessage(), 500);
+                handleError('Erro ao atualizar projeto: ' . $e->getMessage(), 500);
             }
             break;
             
         case 'DELETE':
             // DELETE /project.api.php/123 - Delete specific project (Admin only)
             if (!AuthorizationMiddleware::canDeleteProject($user)) {
-                handleError('Access denied. Admin privileges required to delete projects.', 403);
+                handleError('Acesso negado. Privilégios de administrador são necessários para excluir projetos.', 403);
             }
             
             if (!$projectId) {
-                handleError('Project ID is required for deletion', 400);
+                handleError('O ID do projeto é obrigatório para exclusão', 400);
             }
             
             try {
                 $result = $projectService->deleteProject($projectId);
                 
                 if ($result) {
-                    sendSuccess(['message' => 'Project deleted successfully']);
+                    sendSuccess(['message' => 'Projeto excluído com sucesso']);
                 } else {
-                    handleError('Project not found', 404);
+                    handleError('Projeto não encontrado', 404);
                 }
             } catch (Exception $e) {
-                handleError('Error deleting project: ' . $e->getMessage(), 500);
+                handleError('Erro ao excluir projeto: ' . $e->getMessage(), 500);
             }
             break;
             
         default:
-            handleError('Method not allowed', 405);
+            handleError('Método não permitido', 405);
             break;
     }
 } catch (Exception $e) {
-    handleError('Unexpected error: ' . $e->getMessage(), 500);
+    handleError('Erro inesperado: ' . $e->getMessage(), 500);
 }

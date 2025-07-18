@@ -23,7 +23,7 @@ set_error_handler(function($severity, $message, $file, $line) {
         header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
-            'error' => 'Internal server error occurred',
+            'error' => 'Ocorreu um erro interno no servidor',
             'timestamp' => date('Y-m-d H:i:s')
         ]);
     }
@@ -40,7 +40,7 @@ set_exception_handler(function($exception) {
         header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
-            'error' => 'Internal server error occurred',
+            'error' => 'Ocorreu um erro interno no servidor',
             'timestamp' => date('Y-m-d H:i:s')
         ]);
     }
@@ -64,7 +64,7 @@ register_shutdown_function(function() {
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'error' => 'Fatal server error occurred',
+                'error' => 'Ocorreu um erro fatal no servidor',
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
         }
@@ -111,7 +111,7 @@ try {
     $config = new ConfigAppEnvFile;
     $config->loadEnv();
 } catch (Exception $e) {
-    handleError('Configuration error: ' . $e->getMessage(), 500);
+    handleError('Erro de configuração: ' . $e->getMessage(), 500);
 }
 
 try {
@@ -124,16 +124,16 @@ try {
     
     // Validate database connection
     if (!$pdoConnection) {
-        handleError('Database connection failed. Please check your database configuration.', 500);
+        handleError('Falha na conexão com o banco de dados. Por favor, verifique sua configuração.', 500);
     }
     
     // Test the connection with a simple query
     $pdoConnection->query('SELECT 1');
     
 } catch (PDOException $e) {
-    handleError('Database connection failed: ' . $e->getMessage(), 500);
+    handleError('Falha na conexão com o banco de dados: ' . $e->getMessage(), 500);
 } catch (Exception $e) {
-    handleError('Database setup error: ' . $e->getMessage(), 500);
+    handleError('Erro na configuração do banco de dados: ' . $e->getMessage(), 500);
 }
 
 
@@ -142,7 +142,7 @@ try {
     $sessionRepository = new PdoSessionRepository($pdoConnection);
     $authService = new AuthService($userRepository, $sessionRepository);
 } catch (Exception $e) {
-    handleError('Service initialization error: ' . $e->getMessage(), 500);
+    handleError('Erro na inicialização do serviço: ' . $e->getMessage(), 500);
 }
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -157,7 +157,7 @@ try {
                 case 'login':
                     try {
                         if (!isset($input['username']) || !isset($input['password'])) {
-                            handleError('Username and password are required', 400);
+                            handleError('Usuário e senha são obrigatórios', 400);
                         }
                         
                         $result = $authService->login($input['username'], $input['password']);
@@ -165,10 +165,10 @@ try {
                         if ($result) {
                             sendSuccess($result);
                         } else {
-                            handleError('Invalid credentials', 401);
+                            handleError('Credenciais inválidas', 401);
                         }
                     } catch (Exception $e) {
-                        handleError('Login error: ' . $e->getMessage(), 500);
+                        handleError('Erro no login: ' . $e->getMessage(), 500);
                     }
                     break;
                     
@@ -179,23 +179,23 @@ try {
                         $token = str_replace('Bearer ', '', $authHeader);
                         
                         if (!$token) {
-                            handleError('Token is required', 400);
+                            handleError('O token é obrigatório', 400);
                         }
                         
                         $result = $authService->logout($token);
                         
                         if ($result) {
-                            sendSuccess(['message' => 'Logged out successfully']);
+                            sendSuccess(['message' => 'Logout realizado com sucesso']);
                         } else {
-                            handleError('Failed to logout', 400);
+                            handleError('Falha ao fazer logout', 400);
                         }
                     } catch (Exception $e) {
-                        handleError('Logout error: ' . $e->getMessage(), 500);
+                        handleError('Erro no logout: ' . $e->getMessage(), 500);
                     }
                     break;
                     
                 default:
-                    handleError('POST endpoint not found', 404);
+                    handleError('Endpoint POST não encontrado', 404);
                     break;
             }
             break;
@@ -208,7 +208,7 @@ try {
                         $token = str_replace('Bearer ', '', $authHeader);
                         
                         if (!$token) {
-                            handleError('Token is required', 401);
+                            handleError('O token é obrigatório', 401);
                         }
                         
                         $user = $authService->validateSession($token);
@@ -223,23 +223,23 @@ try {
                                 ]
                             ]);
                         } else {
-                            handleError('Invalid or expired token', 401);
+                            handleError('Token inválido ou expirado', 401);
                         }
                     } catch (Exception $e) {
-                        handleError('Token validation error: ' . $e->getMessage(), 500);
+                        handleError('Erro na validação do token: ' . $e->getMessage(), 500);
                     }
                     break;
                     
                 default:
-                    handleError('Endpoint not found', 404);
+                    handleError('Endpoint não encontrado', 404);
                     break;
             }
             break;
             
         default:
-            handleError('Method not allowed', 405);
+            handleError('Método não permitido', 405);
             break;
     }
 } catch (Exception $e) {
-    handleError('Unexpected error: ' . $e->getMessage(), 500);
+    handleError('Erro inesperado: ' . $e->getMessage(), 500);
 }

@@ -27,7 +27,7 @@ set_error_handler(function($severity, $message, $file, $line) {
         header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
-            'error' => 'Internal server error occurred',
+            'error' => 'Ocorreu um erro interno no servidor',
             'timestamp' => date('Y-m-d H:i:s')
         ]);
     }
@@ -44,7 +44,7 @@ set_exception_handler(function($exception) {
         header('Content-Type: application/json');
         echo json_encode([
             'success' => false,
-            'error' => 'Internal server error occurred',
+            'error' => 'Ocorreu um erro interno no servidor',
             'timestamp' => date('Y-m-d H:i:s')
         ]);
     }
@@ -68,7 +68,7 @@ register_shutdown_function(function() {
             header('Content-Type: application/json');
             echo json_encode([
                 'success' => false,
-                'error' => 'Fatal server error occurred',
+                'error' => 'Ocorreu um erro fatal no servidor',
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
         }
@@ -115,7 +115,7 @@ try {
     $config = new ConfigAppEnvFile;
     $config->loadEnv();
 } catch (Exception $e) {
-    handleError('Configuration error: ' . $e->getMessage(), 500);
+    handleError('Erro de configuração: ' . $e->getMessage(), 500);
 }
 
 try {
@@ -128,16 +128,16 @@ try {
     
     // Validate database connection
     if (!$pdoConnection) {
-        handleError('Database connection failed. Please check your database configuration.', 500);
+        handleError('Falha na conexão com o banco de dados. Por favor, verifique sua configuração.', 500);
     }
     
     // Test the connection with a simple query
     $pdoConnection->query('SELECT 1');
     
 } catch (PDOException $e) {
-    handleError('Database connection failed: ' . $e->getMessage(), 500);
+    handleError('Falha na conexão com o banco de dados: ' . $e->getMessage(), 500);
 } catch (Exception $e) {
-    handleError('Database setup error: ' . $e->getMessage(), 500);
+    handleError('Erro na configuração do banco de dados: ' . $e->getMessage(), 500);
 }
 
 try {
@@ -150,17 +150,17 @@ try {
     $authService = new AuthService($userRepository, $sessionRepository);
     $authMiddleware = new AuthMiddleware($authService);
 } catch (Exception $e) {
-    handleError('Service initialization error: ' . $e->getMessage(), 500);
+    handleError('Erro na inicialização do serviço: ' . $e->getMessage(), 500);
 }
 
 // Authenticate user for all requests
 try {
     $user = $authMiddleware->authenticate();
     if (!$user) {
-        handleError('Authentication required', 401);
+        handleError('Autenticação necessária', 401);
     }
 } catch (Exception $e) {
-    handleError('Authentication error: ' . $e->getMessage(), 401);
+    handleError('Erro de autenticação: ' . $e->getMessage(), 401);
 }
 
 $method = $_SERVER['REQUEST_METHOD'];
@@ -190,7 +190,7 @@ try {
                 if ($task) {
                     sendSuccess($task);
                 } else {
-                    handleError('Task not found', 404);
+                    handleError('Tarefa não encontrada', 404);
                 }
             } else {
                 $searchText = $_GET['search'] ?? null;
@@ -204,65 +204,65 @@ try {
         case 'POST':
             // Create task (Admin only)
             if (!AuthorizationMiddleware::canCreateTask($user)) {
-                handleError('Access denied. Admin privileges required to create tasks.', 403);
+                handleError('Acesso negado. Privilégios de administrador são necessários para criar tarefas.', 403);
             }
             
             $input = json_decode(file_get_contents('php://input'), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                handleError('Invalid JSON input', 400);
+                handleError('Entrada JSON inválida', 400);
             }
             $result = $taskService->createTask($input);
             if ($result) {
-                sendSuccess(['message' => 'Task created successfully'], 201);
+                sendSuccess(['message' => 'Tarefa criada com sucesso'], 201);
             } else {
-                handleError('Failed to create task', 400);
+                handleError('Falha ao criar tarefa', 400);
             }
             break;
 
         case 'PUT':
             // Update task (Admin only)
             if (!AuthorizationMiddleware::canEditTask($user)) {
-                handleError('Access denied. Admin privileges required to edit tasks.', 403);
+                handleError('Acesso negado. Privilégios de administrador são necessários para editar tarefas.', 403);
             }
             
             if (!$taskId) {
-                handleError('Task ID is required for update', 400);
+                handleError('O ID da tarefa é obrigatório para atualização', 400);
             }
             $input = json_decode(file_get_contents('php://input'), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                handleError('Invalid JSON input', 400);
+                handleError('Entrada JSON inválida', 400);
             }
             $result = $taskService->updateTask($taskId, $input);
             if ($result) {
-                sendSuccess(['message' => 'Task updated successfully']);
+                sendSuccess(['message' => 'Tarefa atualizada com sucesso']);
             } else {
-                handleError('Task not found or failed to update', 404);
+                handleError('Tarefa não encontrada ou falha na atualização', 404);
             }
             break;
 
         case 'DELETE':
             // Delete task (Admin only)
             if (!AuthorizationMiddleware::canDeleteTask($user)) {
-                handleError('Access denied. Admin privileges required to delete tasks.', 403);
+                handleError('Acesso negado. Privilégios de administrador são necessários para excluir tarefas.', 403);
             }
             
             if (!$taskId) {
-                handleError('Task ID is required for deletion', 400);
+                handleError('O ID da tarefa é obrigatório para exclusão', 400);
             }
             $result = $taskService->deleteTask($taskId);
             if ($result) {
-                sendSuccess(['message' => 'Task deleted successfully']);
+                sendSuccess(['message' => 'Tarefa excluída com sucesso']);
             } else {
-                handleError('Task not found', 404);
+                handleError('Tarefa não encontrada', 404);
             }
             break;
 
         default:
-            handleError('Method not allowed', 405);
+            handleError('Método não permitido', 405);
             break;
     }
 } catch (InvalidArgumentException $e) {
     handleError($e->getMessage(), 400);
 } catch (Exception $e) {
-    handleError('An unexpected error occurred: ' . $e->getMessage(), 500);
+    handleError('Ocorreu um erro inesperado: ' . $e->getMessage(), 500);
 }

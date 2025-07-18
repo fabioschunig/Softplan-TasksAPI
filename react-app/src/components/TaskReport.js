@@ -46,10 +46,10 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
         setError('');
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Failed to fetch tasks');
+        setError(errorData.error || 'Falha ao buscar tarefas');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError('Erro de rede. Por favor, tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -68,7 +68,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
   };
 
     const handleDeleteTask = async (taskId) => {
-    if (!window.confirm('Are you sure you want to delete this task?')) return;
+    if (!window.confirm('Você tem certeza que deseja excluir esta tarefa?')) return;
 
     try {
       const response = await fetch(`${API_URLS.TASKS}/${taskId}`, {
@@ -81,10 +81,10 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
         setError('');
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Failed to delete task');
+        setError(errorData.error || 'Falha ao excluir tarefa');
       }
     } catch (err) {
-      setError('Network error. Please try again.');
+      setError('Erro de rede. Por favor, tente novamente.');
     }
   };
 
@@ -95,10 +95,10 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
 
   const getStatusText = (status) => {
     switch (status) {
-      case 0: return 'Pending';
-      case 1: return 'In Progress';
-      case 2: return 'Completed';
-      default: return 'Unknown';
+      case 0: return 'Pendente';
+      case 1: return 'Em Andamento';
+      case 2: return 'Concluída';
+      default: return 'Desconhecido';
     }
   };
 
@@ -164,16 +164,16 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
   };
 
   if (loading) {
-    return <div className="task-report"><h2>Loading report...</h2></div>;
+    return <div className="task-report"><h2>Carregando relatório...</h2></div>;
   }
 
   return (
     <div className="task-report">
             <div className="project-header">
-        <h2>Tasks Report</h2>
+        <h2>Relatório de Tarefas</h2>
         {user?.role === 'admin' && (
           <button onClick={onNewTask} className="create-button">
-            New Task
+            Nova Tarefa
           </button>
         )}
       </div>
@@ -184,7 +184,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
         <div className="filter-row">
           <input
             type="text"
-            placeholder="Search tasks..."
+            placeholder="Buscar tarefas..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -194,8 +194,8 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
             onChange={(date) => setStartDate(date)}
             dateFormat="dd/MM/yyyy"
             className="date-picker-input"
-            placeholderText="Start Date"
-            title="Filter tasks active from this date"
+            placeholderText="Data de Início"
+            title="Filtrar tarefas ativas a partir desta data"
             isClearable
           />
           <DatePicker
@@ -203,12 +203,12 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
             onChange={(date) => setEndDate(date)}
             dateFormat="dd/MM/yyyy"
             className="date-picker-input"
-            placeholderText="End Date"
-            title="Filter tasks active until this date"
+            placeholderText="Data de Fim"
+            title="Filtrar tarefas ativas até esta data"
             minDate={startDate}
             isClearable
           />
-          <button type="submit" className="search-button">Filter</button>
+          <button type="submit" className="search-button">Filtrar</button>
           <button 
             type="button" 
             onClick={() => {
@@ -219,7 +219,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
             }}
             className="clear-button"
           >
-            Clear
+            Limpar
           </button>
         </div>
       </form>
@@ -229,13 +229,13 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
           <thead>
             <tr>
               <th onClick={() => requestSort('id')}>ID{getSortIndicator('id')}</th>
-              <th onClick={() => requestSort('description')}>Description{getSortIndicator('description')}</th>
-              <th onClick={() => requestSort('project_id')}>Project{getSortIndicator('project_id')}</th>
-              <th onClick={() => requestSort('status')}>Status{getSortIndicator('status')}</th>
-              <th onClick={() => requestSort('tags')}>Tags{getSortIndicator('tags')}</th>
-              <th onClick={() => requestSort('started')}>Start Date{getSortIndicator('started')}</th>
-              <th onClick={() => requestSort('finished')}>End Date{getSortIndicator('finished')}</th>
-              {user?.role === 'admin' && <th>Actions</th>}
+              <th onClick={() => requestSort('description')}>Descrição{getSortIndicator('description')}</th>
+              <th onClick={() => requestSort('project_id')}>Projeto{getSortIndicator('project_id')}</th>
+              <th onClick={() => requestSort('status')}>Situação{getSortIndicator('status')}</th>
+              <th onClick={() => requestSort('tags')}>Etiquetas{getSortIndicator('tags')}</th>
+              <th onClick={() => requestSort('started')}>Data de Início{getSortIndicator('started')}</th>
+              <th onClick={() => requestSort('finished')}>Data de Fim{getSortIndicator('finished')}</th>
+              {user?.role === 'admin' && <th>Ações</th>}
             </tr>
           </thead>
           <tbody>
@@ -251,15 +251,15 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
                   <td>{formatDate(task.finished)}</td>
                   {user?.role === 'admin' && (
                     <td className="report-actions">
-                      <button onClick={() => onEditTask(task.id)} className="edit-button small-button">Edit</button>
-                      <button onClick={() => handleDeleteTask(task.id)} className="delete-button small-button">Delete</button>
+                      <button onClick={() => onEditTask(task.id)} className="edit-button small-button">Editar</button>
+                      <button onClick={() => handleDeleteTask(task.id)} className="delete-button small-button">Excluir</button>
                     </td>
                   )}
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={user?.role === 'admin' ? "8" : "7"} className="no-results">No tasks found.</td>
+                <td colSpan={user?.role === 'admin' ? "8" : "7"} className="no-results">Nenhuma tarefa encontrada.</td>
               </tr>
             )}
           </tbody>

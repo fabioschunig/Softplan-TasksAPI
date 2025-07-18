@@ -63,7 +63,7 @@ function App() {
     return (
       <div className="App">
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-          <h2>Loading...</h2>
+          <h2>Carregando...</h2>
         </div>
       </div>
     );

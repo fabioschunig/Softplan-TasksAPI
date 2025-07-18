@@ -36,9 +36,9 @@ const Login = ({ onLogin }) => {
         // Try to get error message from response
         try {
           const errorData = await response.json();
-          setError(errorData.error || `Server error: ${response.status}`);
+          setError(errorData.error || `Erro do servidor: ${response.status}`);
         } catch (jsonError) {
-          setError(`Server error: ${response.status} - ${response.statusText}`);
+          setError(`Erro do servidor: ${response.status} - ${response.statusText}`);
         }
         return;
       }
@@ -50,11 +50,11 @@ const Login = ({ onLogin }) => {
         localStorage.setItem('user', JSON.stringify(data.data.user));
         onLogin(data.data);
       } else {
-        setError(data.error || 'Login failed');
+        setError(data.error || 'Falha no login');
       }
     } catch (err) {
       console.error('Login error:', err);
-      setError(`Network error: ${err.message}. Please check if the server is running.`);
+      setError(`Erro de rede: ${err.message}. Por favor, verifique se o servidor está rodando.`);
     } finally {
       setLoading(false);
     }
@@ -63,10 +63,10 @@ const Login = ({ onLogin }) => {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>Login</h2>
+        <h2>Entrar</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="username">Username:</label>
+            <label htmlFor="username">Usuário:</label>
             <input
               type="text"
               id="username"
@@ -78,7 +78,7 @@ const Login = ({ onLogin }) => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password:</label>
+            <label htmlFor="password">Senha:</label>
             <input
               type="password"
               id="password"
@@ -90,7 +90,7 @@ const Login = ({ onLogin }) => {
           </div>
           {error && <div className="error-message">{error}</div>}
           <button type="submit" disabled={loading} className="auth-button">
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
       </div>
