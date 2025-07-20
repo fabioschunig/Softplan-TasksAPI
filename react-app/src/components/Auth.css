@@ -1,14 +1,109 @@
+/* Global Theme Application */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#root {
+  background: var(--bg-primary);
+  min-height: 100vh;
+}
+
+/* CSS Variables for Theme System */
+:root {
+  /* Light Theme Colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e1e5e9;
+  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --border-color: #e1e5e9;
+  --border-focus: #667eea;
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.15);
+  --button-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --button-success: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  --button-danger: #dc3545;
+  --button-warning: #ffc107;
+  --button-secondary: #6c757d;
+  --hover-bg: #f1f3f5;
+  --table-stripe: #f8f9fa;
+}
+
+/* Dark Theme Colors */
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #404040;
+  --bg-gradient: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+  --text-primary: #e2e8f0;
+  --text-secondary: #a0aec0;
+  --text-muted: #718096;
+  --border-color: #4a5568;
+  --border-focus: #667eea;
+  --shadow-light: rgba(0, 0, 0, 0.3);
+  --shadow-medium: rgba(0, 0, 0, 0.4);
+  --button-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --button-success: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+  --button-danger: #e53e3e;
+  --button-warning: #d69e2e;
+  --button-secondary: #718096;
+  --hover-bg: #4a5568;
+  --table-stripe: #2d2d2d;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: relative;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: 25px;
+  width: 60px;
+  height: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+.theme-toggle:hover {
+  border-color: var(--border-focus);
+}
+
+.theme-toggle-slider {
+  width: 22px;
+  height: 22px;
+  background: var(--button-primary);
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: white;
+}
+
+[data-theme="dark"] .theme-toggle-slider {
+  transform: translateX(30px);
+}
+
 .auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-gradient);
   padding: 20px;
 }
 
 .auth-card {
-  background: white;
+  background: var(--bg-primary);
   padding: 2rem;
   border-radius: 10px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -19,7 +114,7 @@
 .auth-card h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #333;
+  color: var(--text-primary);
   font-size: 1.8rem;
 }
 
@@ -30,29 +125,31 @@
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #555;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
 .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid var(--border-color);
   border-radius: 5px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--border-focus);
 }
 
 .auth-button {
   width: 100%;
   padding: 0.75rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--button-primary);
   color: white;
   border: none;
   border-radius: 5px;
@@ -105,28 +202,28 @@
 .admin-info {
   margin-top: 1.5rem;
   padding: 1rem;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   border-radius: 8px;
-  border: 1px solid #e1e5e9;
+  border: 1px solid var(--border-color);
   text-align: center;
 }
 
 .admin-info p {
   margin: 0.5rem 0;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .admin-info p:first-child {
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 0.75rem;
 }
 
 .admin-info code {
-  background: #e9ecef;
+  background: var(--bg-tertiary);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
-  color: #495057;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -134,6 +231,8 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  background: var(--bg-primary);
+  min-height: 100vh;
 }
 
 .dashboard-header {
@@ -142,11 +241,11 @@
   align-items: center;
   margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #e1e5e9;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .dashboard-header h1 {
-  color: #333;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -154,11 +253,12 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  color: var(--text-primary);
 }
 
 .logout-button {
   padding: 0.5rem 1rem;
-  background: #dc3545;
+  background: var(--button-danger);
   color: white;
   border: none;
   border-radius: 5px;
@@ -167,19 +267,20 @@
 }
 
 .logout-button:hover {
-  background: #c82333;
+  background: var(--button-danger);
+  opacity: 0.9;
 }
 
 .tasks-container {
-  background: white;
+  background: var(--bg-secondary);
   padding: 1.5rem;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px var(--shadow-light);
 }
 
 .task-item {
   padding: 1rem;
-  border-bottom: 1px solid #e1e5e9;
+  border-bottom: 1px solid var(--border-color);
   margin-bottom: 0.5rem;
 }
 
@@ -190,13 +291,13 @@
 
 .task-description {
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
 
 .task-meta {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 /* Dashboard Tabs */
@@ -204,7 +305,7 @@
   display: flex;
   gap: 0.5rem;
   margin-bottom: 2rem;
-  border-bottom: 2px solid #e1e5e9;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .tab-button {
@@ -215,27 +316,27 @@
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
-  color: #666;
+  color: var(--text-secondary);
   transition: all 0.3s ease;
 }
 
 .tab-button:hover {
-  color: #333;
-  background: #f8f9fa;
+  color: var(--text-primary);
+  background: var(--hover-bg);
 }
 
 .tab-button.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
-  background: #f8f9fa;
+  color: var(--border-focus);
+  border-bottom-color: var(--border-focus);
+  background: var(--hover-bg);
 }
 
 /* Project Manager Styles */
 .project-manager {
-  background: white;
+  background: var(--bg-secondary);
   padding: 1.5rem;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px var(--shadow-light);
 }
 
 .project-header {
@@ -247,12 +348,12 @@
 
 .project-header h2 {
   margin: 0;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .create-button {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  background: var(--button-success);
   color: white;
   border: none;
   border-radius: 5px;
@@ -277,20 +378,22 @@
 .search-input {
   flex: 1;
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid var(--border-color);
   border-radius: 5px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--border-focus);
 }
 
 .search-button {
   padding: 0.75rem 1.5rem;
-  background: #667eea;
+  background: var(--border-focus);
   color: white;
   border: none;
   border-radius: 5px;
@@ -299,12 +402,13 @@
 }
 
 .search-button:hover {
-  background: #5a6fd8;
+  background: var(--border-focus);
+  opacity: 0.9;
 }
 
 .clear-search-button {
   padding: 0.75rem 1rem;
-  background: #6c757d;
+  background: var(--button-secondary);
   color: white;
   border: none;
   border-radius: 5px;
@@ -313,21 +417,22 @@
 }
 
 .clear-search-button:hover {
-  background: #5a6268;
+  background: var(--button-secondary);
+  opacity: 0.9;
 }
 
 /* Project Form */
 .project-form {
-  background: #f8f9fa;
+  background: var(--bg-tertiary);
   padding: 1.5rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  border: 1px solid #e1e5e9;
+  border: 1px solid var(--border-color);
 }
 
 .project-form h3 {
   margin: 0 0 1rem 0;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .project-form .form-group {
@@ -337,7 +442,7 @@
 .project-form textarea {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid var(--border-color);
   border-radius: 5px;
   font-size: 1rem;
   font-family: inherit;
@@ -345,15 +450,17 @@
   min-height: 80px;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .project-form textarea:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--border-focus);
 }
 
 .project-form small {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.85rem;
 }
 
@@ -365,7 +472,7 @@
 
 .submit-button {
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--button-primary);
   color: white;
   border: none;
   border-radius: 5px;
@@ -381,7 +488,7 @@
 
 .cancel-button {
   padding: 0.75rem 1.5rem;
-  background: #6c757d;
+  background: var(--button-secondary);
   color: white;
   border: none;
   border-radius: 5px;
@@ -390,7 +497,8 @@
 }
 
 .cancel-button:hover {
-  background: #5a6268;
+  background: var(--button-secondary);
+  opacity: 0.9;
 }
 
 /* Projects Grid */
@@ -400,7 +508,7 @@
 
 .no-projects {
   text-align: center;
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
   padding: 2rem;
 }
@@ -412,8 +520,8 @@
 }
 
 .project-card {
-  background: #f8f9fa;
-  border: 1px solid #e1e5e9;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.5rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -421,7 +529,7 @@
 
 .project-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 5px 15px var(--shadow-light);
 }
 
 .project-content {
@@ -430,7 +538,7 @@
 
 .project-id {
   font-size: 0.85rem;
-  color: #667eea;
+  color: var(--border-focus);
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
@@ -438,14 +546,14 @@
 .project-description {
   font-size: 1.1rem;
   font-weight: 500;
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 1rem;
   line-height: 1.4;
 }
 
 .project-dates {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .project-dates div {
@@ -459,7 +567,7 @@
 
 .edit-button {
   padding: 0.5rem 1rem;
-  background: #ffc107;
+  background: var(--button-warning);
   color: #212529;
   border: none;
   border-radius: 4px;
@@ -470,7 +578,8 @@
 }
 
 .edit-button:hover:not(:disabled) {
-  background: #e0a800;
+  background: var(--button-warning);
+  opacity: 0.9;
 }
 
 .edit-button:disabled {
@@ -480,7 +589,7 @@
 
 .delete-button {
   padding: 0.5rem 1rem;
-  background: #dc3545;
+  background: var(--button-danger);
   color: white;
   border: none;
   border-radius: 4px;
@@ -491,7 +600,8 @@
 }
 
 .delete-button:hover {
-  background: #c82333;
+  background: var(--button-danger);
+  opacity: 0.9;
 }
 
 /* Filter Row Styles */
@@ -504,22 +614,24 @@
 
 .date-picker-input {
   padding: 0.5rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid var(--border-color);
   border-radius: 4px;
   font-size: 0.9rem;
   min-width: 120px;
   transition: border-color 0.3s ease;
   width: 120px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .date-picker-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--border-focus);
 }
 
 .clear-button {
   padding: 0.5rem 1rem;
-  background: #6c757d;
+  background: var(--button-secondary);
   color: white;
   border: none;
   border-radius: 4px;
@@ -530,7 +642,8 @@
 }
 
 .clear-button:hover {
-  background: #5a6268;
+  background: var(--button-secondary);
+  opacity: 0.9;
 }
 
 /* Responsive Design */
@@ -576,19 +689,21 @@
 }
 
 /* react-datepicker custom styles */
-.date-picker-input {
+.react-datepicker .date-picker-input {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid var(--border-color);
   border-radius: 5px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
-.date-picker-input:focus {
+.react-datepicker .date-picker-input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--border-focus);
 }
 
 .react-datepicker-wrapper {
@@ -596,7 +711,7 @@
 }
 
 .react-datepicker__header {
-  background-color: #667eea;
+  background-color: var(--border-focus);
 }
 
 .react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker__day-name {
@@ -605,15 +720,15 @@
 }
 
 .react-datepicker__day--selected, .react-datepicker__day--keyboard-selected {
-  background-color: #764ba2;
+  background-color: var(--border-focus);
 }
 
 /* Task Report Styles */
 .task-report {
-  background: white;
+  background: var(--bg-secondary);
   padding: 1.5rem;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px var(--shadow-light);
 }
 
 .report-table-container {
@@ -628,15 +743,17 @@
 
 .report-table th, .report-table td {
   padding: 0.75rem 1rem;
-  border: 1px solid #e1e5e9;
+  border: 1px solid var(--border-color);
   text-align: left;
   vertical-align: middle;
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .report-table th {
-  background-color: #f8f9fa;
+  background-color: var(--bg-tertiary);
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .report-table.sortable th {
@@ -646,20 +763,20 @@
 }
 
 .report-table.sortable th:hover {
-  background-color: #f1f3f5;
+  background-color: var(--hover-bg);
 }
 
 .report-table tbody tr:nth-child(even) {
-  background-color: #f8f9fa;
+  background-color: var(--table-stripe);
 }
 
 .report-table tbody tr:hover {
-  background-color: #f1f3f5;
+  background-color: var(--hover-bg);
 }
 
 .report-table .no-results {
   text-align: center;
-  color: #666;
+  color: var(--text-secondary);
   font-style: italic;
   padding: 2rem;
 }
@@ -678,18 +795,19 @@
 /* Task Manager Specific Styles */
 .task-tags, .task-project, .task-status {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--text-secondary);
   margin-top: 0.5rem;
 }
 
 .task-tags em {
   font-style: normal;
-  background: #e1e5e9;
+  background: var(--bg-tertiary);
   padding: 2px 6px;
   border-radius: 4px;
   margin-right: 4px;
   display: inline-block;
   margin-top: 4px;
+  color: var(--text-primary);
 }
 
 .task-status {
@@ -711,17 +829,18 @@
 .project-card .task-status {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid #e1e5e9;
+    border-top: 1px solid var(--border-color);
 }
 
 /* Style for select dropdowns in forms */
 .project-form select {
   width: 100%;
   padding: 0.75rem;
-  border: 2px solid #e1e5e9;
+  border: 2px solid var(--border-color);
   border-radius: 5px;
   font-size: 1rem;
-  background: white;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   transition: border-color 0.3s ease;
   box-sizing: border-box;
   -webkit-appearance: none;
@@ -735,7 +854,7 @@
 
 .project-form select:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--border-focus);
 }
 
 /* User Manager Styles */
@@ -751,13 +870,13 @@
 }
 
 .user-manager-header h2 {
-  color: #333;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .create-user-btn {
   padding: 0.75rem 1.5rem;
-  background: #28a745;
+  background: var(--button-success);
   color: white;
   border: none;
   border-radius: 5px;
@@ -767,24 +886,24 @@
 }
 
 .create-user-btn:hover {
-  background: #218838;
+  opacity: 0.9;
 }
 
 .create-user-form {
-  background: #f8f9fa;
+  background: var(--bg-tertiary);
   padding: 2rem;
   border-radius: 8px;
   margin-bottom: 2rem;
-  border: 1px solid #e1e5e9;
+  border: 1px solid var(--border-color);
 }
 
 .create-user-form h3 {
   margin-top: 0;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .users-list h3 {
-  color: #333;
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
@@ -795,27 +914,27 @@
 }
 
 .user-card {
-  background: white;
-  border: 1px solid #e1e5e9;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px var(--shadow-light);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .user-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px var(--shadow-medium);
 }
 
 .user-info h4 {
   margin: 0 0 0.5rem 0;
-  color: #333;
+  color: var(--text-primary);
   font-size: 1.2rem;
 }
 
 .user-email {
-  color: #666;
+  color: var(--text-secondary);
   margin: 0.25rem 0;
 }
 
@@ -832,17 +951,17 @@
 }
 
 .role-badge.admin {
-  background: #dc3545;
+  background: var(--button-danger);
   color: white;
 }
 
 .role-badge.user {
-  background: #6c757d;
+  background: var(--button-secondary);
   color: white;
 }
 
 .user-created {
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.9rem;
   margin: 0.5rem 0 0 0;
 }
@@ -850,12 +969,12 @@
 .user-actions {
   margin-top: 1rem;
   padding-top: 1rem;
-  border-top: 1px solid #e1e5e9;
+  border-top: 1px solid var(--border-color);
 }
 
 .delete-btn {
   padding: 0.5rem 1rem;
-  background: #dc3545;
+  background: var(--button-danger);
   color: white;
   border: none;
   border-radius: 4px;
@@ -865,7 +984,8 @@
 }
 
 .delete-btn:hover {
-  background: #c82333;
+  background: var(--button-danger);
+  opacity: 0.9;
 }
 
 .admin-protected {
@@ -876,20 +996,20 @@
 
 /* View Only Styles */
 .view-only {
-  color: #6c757d;
+  color: var(--text-secondary);
   font-style: italic;
   font-weight: 500;
   padding: 0.5rem 1rem;
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   border-radius: 4px;
-  border: 1px solid #e1e5e9;
+  border: 1px solid var(--border-color);
 }
 
 /* Loading styles */
 .loading {
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 1.1rem;
 }
 

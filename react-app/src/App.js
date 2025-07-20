@@ -3,6 +3,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import { API_URLS } from './config/api';
 import './App.css';
+import './components/Auth.css';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -10,6 +11,11 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Apply saved theme on app load - tema escuro como padrão
+    const savedTheme = localStorage.getItem('theme');
+    const theme = savedTheme === 'light' ? 'light' : 'dark'; // Padrão é escuro
+    document.documentElement.setAttribute('data-theme', theme);
+    
     checkAuthStatus();
   }, []);
 

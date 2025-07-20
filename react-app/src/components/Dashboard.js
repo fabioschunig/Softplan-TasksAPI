@@ -9,6 +9,11 @@ import './Auth.css';
 const Dashboard = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState('tasks');
   const [initialTaskAction, setInitialTaskAction] = useState(null);
+  const [isDarkTheme, setIsDarkTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('theme');
+    // Tema escuro como padrão: retorna true se não há preferência salva ou se a preferência é 'dark'
+    return savedTheme !== 'light';
+  });
 
     const handleRequestNewTask = () => {
     setInitialTaskAction({ action: 'new' });
@@ -26,6 +31,16 @@ const Dashboard = ({ user, onLogout }) => {
       setInitialTaskAction(null);
     }
   }, [activeTab]);
+
+  // Apply theme to document
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
+    localStorage.setItem('theme', isDarkTheme ? 'dark' : 'light');
+  }, [isDarkTheme]);
+
+  const toggleTheme = () => {
+    setIsDarkTheme(!isDarkTheme);
+  };
 
   const handleLogout = async () => {
     try {
@@ -53,6 +68,11 @@ const Dashboard = ({ user, onLogout }) => {
         <h1>Softplan Tarefas</h1>
         <div className="user-info">
           <span>Bem-vindo(a), {user?.username || 'Usuário'}! ({user?.role || 'user'})</span>
+          <button onClick={toggleTheme} className="theme-toggle" title={isDarkTheme ? 'Alternar para tema claro' : 'Alternar para tema escuro'}>
+            <div className="theme-toggle-slider">
+              {isDarkTheme ? '🌙' : '☀️'}
+            </div>
+          </button>
           <button onClick={handleLogout} className="logout-button">
             Sair
           </button>
