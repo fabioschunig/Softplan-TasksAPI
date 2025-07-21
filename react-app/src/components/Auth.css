@@ -31,6 +31,8 @@ html, body {
   --button-danger: #dc3545;
   --button-warning: #ffc107;
   --button-secondary: #6c757d;
+  --button-text-light: #4a5568; /* Texto cinza escuro suave para tema claro */
+  --button-text-dark: #4a5568; /* Texto cinza escuro suave */
   --hover-bg: #f1f3f5;
   --table-stripe: #f8f9fa;
 }
@@ -49,10 +51,13 @@ html, body {
   --shadow-light: rgba(0, 0, 0, 0.3);
   --shadow-medium: rgba(0, 0, 0, 0.4);
   --button-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --button-success: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
-  --button-danger: #e53e3e;
-  --button-warning: #d69e2e;
-  --button-secondary: #718096;
+  --button-success: #4a6741; /* Verde escuro suave */
+  --button-danger: #8b4a47; /* Vermelho escuro suave */
+  --button-warning: #8b6914; /* Amarelo/laranja escuro suave */
+  --button-secondary: #4a5568; /* Cinza escuro suave */
+  --border-focus: #4a5d8a; /* Azul escuro suave para botões de busca/filtrar */
+  --button-text-light: white; /* Texto claro para tema escuro */
+  --button-text-dark: #2d3748; /* Texto escuro para botões claros */
   --hover-bg: #4a5568;
   --table-stripe: #2d2d2d;
 }
@@ -331,6 +336,12 @@ html, body {
   background: var(--hover-bg);
 }
 
+/* Correção para aba ativa no tema escuro */
+[data-theme="dark"] .tab-button.active {
+  color: #667eea; /* Azul claro original para contraste */
+  border-bottom-color: #667eea;
+}
+
 /* Project Manager Styles */
 .project-manager {
   background: var(--bg-secondary);
@@ -568,7 +579,7 @@ html, body {
 .edit-button {
   padding: 0.5rem 1rem;
   background: var(--button-warning);
-  color: #212529;
+  color: var(--button-text-light);
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -815,15 +826,15 @@ html, body {
 }
 
 .task-status .status-text-pending {
-  color: #b08f00;
+  color: #ffa726;
 }
 
 .task-status .status-text-in-progress {
-  color: #007bff;
+  color: #4a9eff;
 }
 
 .task-status .status-text-completed {
-  color: #28a745;
+  color: #66bb6a;
 }
 
 .project-card .task-status {
@@ -989,7 +1000,7 @@ html, body {
 }
 
 .admin-protected {
-  color: #28a745;
+  color: #66bb6a;
   font-weight: 600;
   font-size: 0.9rem;
 }
