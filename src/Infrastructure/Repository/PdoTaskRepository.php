@@ -44,6 +44,9 @@ class PdoTaskRepository implements TaskRepository
             $sqlQuery .= " AND t.started <= :endDate";
         }
 
+        // Add default ordering by finished date descending (NULL values last)
+        $sqlQuery .= " ORDER BY t.finished DESC, t.id DESC";
+
         $stmt = $this->connection->prepare($sqlQuery);
 
         if ($searchText) {

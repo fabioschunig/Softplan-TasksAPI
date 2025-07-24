@@ -7,7 +7,7 @@ import { API_URLS } from '../config/api';
 import './Auth.css';
 
 const Dashboard = ({ user, onLogout }) => {
-  const [activeTab, setActiveTab] = useState('tasks');
+  const [activeTab, setActiveTab] = useState('report');
   const [initialTaskAction, setInitialTaskAction] = useState(null);
   const [isDarkTheme, setIsDarkTheme] = useState(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -81,6 +81,12 @@ const Dashboard = ({ user, onLogout }) => {
 
       <div className="dashboard-tabs">
         <button 
+          className={`tab-button ${activeTab === 'report' ? 'active' : ''}`}
+          onClick={() => setActiveTab('report')}
+        >
+          Relatório
+        </button>
+        <button 
           className={`tab-button ${activeTab === 'tasks' ? 'active' : ''}`}
           onClick={() => setActiveTab('tasks')}
         >
@@ -91,12 +97,6 @@ const Dashboard = ({ user, onLogout }) => {
           onClick={() => setActiveTab('projects')}
         >
           Projetos
-        </button>
-        <button 
-          className={`tab-button ${activeTab === 'report' ? 'active' : ''}`}
-          onClick={() => setActiveTab('report')}
-        >
-          Relatório
         </button>
         {user?.role === 'admin' && (
           <button 

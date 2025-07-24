@@ -12,7 +12,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
-  const [sortConfig, setSortConfig] = useState({ key: 'description', direction: 'ascending' });
+  const [sortConfig, setSortConfig] = useState({ key: 'finished', direction: 'descending' });
 
   useEffect(() => {
     fetchTasks();
@@ -118,9 +118,10 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
             aValue = getStatusText(a.status);
             bValue = getStatusText(b.status);
         } else if (sortConfig.key === 'started' || sortConfig.key === 'finished') {
-            // Treat null or invalid dates as being "greater" so they sort to the end.
-            if (!aValue) return 1;
-            if (!bValue) return -1;
+            // Handle null dates based on sort direction
+            if (!aValue && !bValue) return 0;
+            if (!aValue) return sortConfig.direction === 'descending' ? 1 : -1;
+            if (!bValue) return sortConfig.direction === 'descending' ? -1 : 1;
             aValue = new Date(aValue);
             bValue = new Date(bValue);
         }
