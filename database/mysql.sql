@@ -58,6 +58,6 @@ CREATE TABLE `user_session` (
 -- Inserir usuário administrador padrão
 -- Senha padrão: adm!123 (hasheada com bcrypt)
 INSERT INTO `user` (`username`, `email`, `password_hash`, `role`) VALUES 
-('admin', 'admin@softplan.com', '$2y$10$WbQgNwZqDHWdQ9y3SLMD9.OvRWh6hOt2rKQi46WZCsdnlCAQ8fW22', 'admin');
+('admin', 'admin@softplan.tasks.com.br', '$2y$10$WbQgNwZqDHWdQ9y3SLMD9.OvRWh6hOt2rKQi46WZCsdnlCAQ8fW22', 'admin');
 
 commit;
