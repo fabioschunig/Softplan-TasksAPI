@@ -33,15 +33,11 @@ class PdoTaskRepository implements TaskRepository
         }
 
         if ($startDate && $endDate) {
-            // Tasks that were active during the specified period
-            // A task is active if: (task.started <= endDate) AND (task.finished >= startDate OR task.finished IS NULL)
-            $sqlQuery .= " AND (t.started <= :endDate) AND (t.finished >= :startDate OR t.finished IS NULL)";
+            $sqlQuery .= " AND t.reference_date BETWEEN :startDate AND :endDate";
         } elseif ($startDate) {
-            // Tasks that were active on or after the start date
-            $sqlQuery .= " AND (t.finished >= :startDate OR t.finished IS NULL)";
+            $sqlQuery .= " AND t.reference_date >= :startDate";
         } elseif ($endDate) {
-            // Tasks that were active on or before the end date
-            $sqlQuery .= " AND t.started <= :endDate";
+            $sqlQuery .= " AND t.reference_date <= :endDate";
         }
 
         // Add default ordering by finished date descending (NULL values last)
@@ -74,7 +70,7 @@ class PdoTaskRepository implements TaskRepository
                 $taskData['description'],
                 $taskData['tags'],
                 $taskData['project_id'],
-                $taskData['started'] == null ? null : new DateTime($taskData['started']),
+                $taskData['reference_date'] == null ? null : new DateTime($taskData['reference_date']),
                 $taskData['finished']  == null ? null : new DateTime($taskData['finished']),
                 $taskData['status'],
                 $taskData['created'] == null ? null : new DateTime($taskData['created']),
@@ -103,7 +99,7 @@ class PdoTaskRepository implements TaskRepository
     public function create(Task $task): bool
     {
         $stmt = $this->connection->prepare(
-            'INSERT INTO task (description, tags, project_id, status, started, finished) VALUES (?, ?, ?, ?, ?, ?)'
+            'INSERT INTO task (description, tags, project_id, status, reference_date, finished) VALUES (?, ?, ?, ?, ?, ?)'
         );
 
         return $stmt->execute([
@@ -111,7 +107,7 @@ class PdoTaskRepository implements TaskRepository
             $task->tags,
             $task->projectId,
             $task->status,
-            $task->started ? $task->started->format('Y-m-d H:i:s') : null,
+            $task->reference_date ? $task->reference_date->format('Y-m-d H:i:s') : null,
             $task->finished ? $task->finished->format('Y-m-d H:i:s') : null
         ]);
     }
@@ -119,14 +115,14 @@ class PdoTaskRepository implements TaskRepository
     public function update(Task $task): bool
     {
         $stmt = $this->connection->prepare(
-            'UPDATE task SET description = ?, tags = ?, project_id = ?, started = ?, finished = ?, status = ? WHERE id = ?'
+            'UPDATE task SET description = ?, tags = ?, project_id = ?, reference_date = ?, finished = ?, status = ? WHERE id = ?'
         );
 
         return $stmt->execute([
             $task->description,
             $task->tags,
             $task->projectId,
-            $task->started ? $task->started->format('Y-m-d H:i:s') : null,
+            $task->reference_date ? $task->reference_date->format('Y-m-d H:i:s') : null,
             $task->finished ? $task->finished->format('Y-m-d H:i:s') : null,
             $task->status,
             $task->id
@@ -146,7 +142,7 @@ class PdoTaskRepository implements TaskRepository
             $taskData['description'],
             $taskData['tags'],
             $taskData['project_id'],
-            $taskData['started'] == null ? null : new DateTime($taskData['started']),
+            $taskData['reference_date'] == null ? null : new DateTime($taskData['reference_date']),
             $taskData['finished']  == null ? null : new DateTime($taskData['finished']),
             $taskData['status'],
             $taskData['created'] == null ? null : new DateTime($taskData['created']),

@@ -8,7 +8,7 @@ class Task implements \JsonSerializable
     public readonly string $description;
     public readonly string|null $tags;
     public readonly int|null $projectId;
-    public readonly \DateTime|null $started;
+    public readonly \DateTime|null $reference_date;
     public readonly \DateTime|null $finished;
     public readonly int $status;
     public readonly \DateTime|null $created;
@@ -19,7 +19,7 @@ class Task implements \JsonSerializable
         string $description,
         string|null $tags,
         int|null $projectId,
-        \DateTime|null $started,
+        \DateTime|null $reference_date,
         \DateTime|null $finished,
         int $status,
         \DateTime|null $created,
@@ -29,7 +29,7 @@ class Task implements \JsonSerializable
         $this->description = $description;
         $this->tags = $tags;
         $this->projectId = $projectId;
-        $this->started = $started;
+        $this->reference_date = $reference_date;
         $this->finished = $finished;
         $this->status = $status;
         $this->created = $created;
@@ -43,7 +43,7 @@ class Task implements \JsonSerializable
             'description' => $this->description,
             'tags' => $this->tags,
             'project_id' => $this->projectId,
-            'started' => $this->started?->format('Y-m-d H:i:s'),
+            'reference_date' => $this->reference_date?->format('Y-m-d H:i:s'),
             'finished' => $this->finished?->format('Y-m-d H:i:s'),
             'status' => $this->status,
             'created' => $this->created?->format('Y-m-d H:i:s'),

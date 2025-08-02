@@ -17,7 +17,7 @@ CREATE TABLE `task` (
   `description` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tags` VARCHAR(255) COLLATE utf8mb4_unicode_ci NULL,
   `project_id` INT UNSIGNED NULL,
-  `started` TIMESTAMP NULL,
+  `reference_date` TIMESTAMP NULL,
   `finished` TIMESTAMP NULL,
   `status` TINYINT(1) NOT NULL DEFAULT 0,
   `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

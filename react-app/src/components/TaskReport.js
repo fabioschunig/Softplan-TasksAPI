@@ -117,7 +117,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
         if (sortConfig.key === 'status') {
             aValue = getStatusText(a.status);
             bValue = getStatusText(b.status);
-        } else if (sortConfig.key === 'started' || sortConfig.key === 'finished') {
+        } else if (sortConfig.key === 'reference_date' || sortConfig.key === 'finished') {
             // Handle null dates based on sort direction
             if (!aValue && !bValue) return 0;
             if (!aValue) return sortConfig.direction === 'descending' ? 1 : -1;
@@ -195,8 +195,8 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
             onChange={(date) => setStartDate(date)}
             dateFormat="dd/MM/yyyy"
             className="date-picker-input"
-            placeholderText="Data de Início"
-            title="Filtrar tarefas ativas a partir desta data"
+            placeholderText="Data de Referência"
+            title="Filtrar tarefas pela data de referência inicial"
             isClearable
           />
           <DatePicker
@@ -204,8 +204,8 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
             onChange={(date) => setEndDate(date)}
             dateFormat="dd/MM/yyyy"
             className="date-picker-input"
-            placeholderText="Data de Fim"
-            title="Filtrar tarefas ativas até esta data"
+            placeholderText="Data de Referência Final"
+            title="Filtrar tarefas pela data de referência final"
             minDate={startDate}
             isClearable
           />
@@ -234,7 +234,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
               <th onClick={() => requestSort('project_id')}>Projeto{getSortIndicator('project_id')}</th>
               <th onClick={() => requestSort('status')}>Situação{getSortIndicator('status')}</th>
               <th onClick={() => requestSort('tags')}>Etiquetas{getSortIndicator('tags')}</th>
-              <th onClick={() => requestSort('started')}>Data de Início{getSortIndicator('started')}</th>
+              <th onClick={() => requestSort('reference_date')}>Data de Referência{getSortIndicator('reference_date')}</th>
               <th onClick={() => requestSort('finished')}>Data de Fim{getSortIndicator('finished')}</th>
               {user?.role === 'admin' && <th>Ações</th>}
             </tr>
@@ -248,7 +248,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
                   <td>{getProjectName(task.project_id)}</td>
                   <td>{getStatusText(task.status)}</td>
                   <td>{task.tags || 'N/A'}</td>
-                  <td>{formatDate(task.started)}</td>
+                  <td>{formatDate(task.reference_date)}</td>
                   <td>{formatDate(task.finished)}</td>
                   {user?.role === 'admin' && (
                     <td className="report-actions">

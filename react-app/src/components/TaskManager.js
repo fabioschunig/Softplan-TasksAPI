@@ -10,7 +10,7 @@ const TaskManager = ({ initialAction, user }) => {
   const [error, setError] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [formData, setFormData] = useState({ description: '', tags: '', project_id: '', status: 0, started: null, finished: null });
+  const [formData, setFormData] = useState({ description: '', tags: '', project_id: '', status: 0, reference_date: null, finished: null });
   const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
@@ -106,7 +106,7 @@ const TaskManager = ({ initialAction, user }) => {
         tags: formData.tags.trim(),
         project_id: formData.project_id ? parseInt(formData.project_id, 10) : null,
         status: parseInt(formData.status, 10),
-                started: formData.started ? formData.started.toISOString().slice(0, 10) : null,
+                reference_date: formData.reference_date ? formData.reference_date.toISOString().slice(0, 10) : null,
         finished: formData.finished ? formData.finished.toISOString().slice(0, 10) : null
     };
 
@@ -158,7 +158,7 @@ const TaskManager = ({ initialAction, user }) => {
         tags: task.tags || '', 
         project_id: task.project_id || '',
         status: task.status || 0,
-        started: task.started ? new Date(task.started) : null,
+        reference_date: task.reference_date ? new Date(task.reference_date) : null,
         finished: task.finished ? new Date(task.finished) : null
     });
     setShowCreateForm(false); // Hide create form if it was open
@@ -168,7 +168,7 @@ const TaskManager = ({ initialAction, user }) => {
     const resetForm = (keepCreateFormOpen = false) => {
     setEditingTask(null);
     setShowCreateForm(keepCreateFormOpen);
-    setFormData({ description: '', tags: '', project_id: '', status: 0, started: null, finished: null });
+    setFormData({ description: '', tags: '', project_id: '', status: 0, reference_date: null, finished: null });
     setError('');
   };
 
@@ -244,14 +244,14 @@ const TaskManager = ({ initialAction, user }) => {
         </select>
       </div>
             <div className="form-group">
-        <label htmlFor="started">Data de Início:</label>
+        <label htmlFor="reference_date">Data de Referência:</label>
         <DatePicker
-          id="started"
-          selected={formData.started}
-          onChange={(date) => setFormData({ ...formData, started: date })}
+          id="reference_date"
+          selected={formData.reference_date}
+          onChange={(date) => setFormData({ ...formData, reference_date: date })}
           dateFormat="dd/MM/yyyy"
           className="date-picker-input"
-          placeholderText="Selecione a data de início"
+          placeholderText="Selecione a data de referência"
           isClearable
         />
       </div>
@@ -264,7 +264,7 @@ const TaskManager = ({ initialAction, user }) => {
           dateFormat="dd/MM/yyyy"
           className="date-picker-input"
           placeholderText="Selecione a data de fim"
-          minDate={formData.started} // Prevent end date before start date
+          minDate={formData.reference_date} // Prevent end date before reference date
           isClearable
         />
       </div>
@@ -320,7 +320,7 @@ const TaskManager = ({ initialAction, user }) => {
                   <div className="project-dates">
                     <div><strong>Criado:</strong> {formatDate(task.created)}</div>
                     {task.updated && <div><strong>Atualizado:</strong> {formatDate(task.updated)}</div>}
-                    {task.started && <div><strong>Iniciado:</strong> {formatDate(task.started)}</div>}
+                    {task.reference_date && <div><strong>Data de Referência:</strong> {formatDate(task.reference_date)}</div>}
                     {task.finished && <div><strong>Finalizado:</strong> {formatDate(task.finished)}</div>}
                   </div>
                    <div className={`task-status`}><strong className={`status-text-${getStatusText(task.status).toLowerCase().replace(' ', '-')}`}>Situação:</strong> {getStatusText(task.status)}</div>
