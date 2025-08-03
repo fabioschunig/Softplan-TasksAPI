@@ -31,10 +31,10 @@ class TaskService
             throw new InvalidArgumentException('A descrição da tarefa é obrigatória e deve ter no máximo 255 caracteres.');
         }
 
-        $started = isset($data['started']) && $data['started'] ? new \DateTime($data['started']) : null;
+        $reference_date = isset($data['reference_date']) && $data['reference_date'] ? new \DateTime($data['reference_date']) : null;
         $finished = isset($data['finished']) && $data['finished'] ? new \DateTime($data['finished']) : null;
 
-        if ($started && $finished && $finished < $started) {
+        if ($reference_date && $finished && $finished < $reference_date) {
             throw new InvalidArgumentException('A data de término não pode ser anterior à data de início.');
         }
 
@@ -43,7 +43,7 @@ class TaskService
             $data['description'],
             $data['tags'] ?? null,
             $data['project_id'] ?? null,
-            $started,
+            $reference_date,
             $finished,
             $data['status'] ?? 0,
             null, // created
@@ -66,7 +66,7 @@ class TaskService
             $data['description'] ?? $task->description,
             $data['tags'] ?? $task->tags,
             $data['project_id'] ?? $task->projectId,
-            isset($data['started']) ? new \DateTime($data['started']) : $task->started,
+            isset($data['reference_date']) ? new \DateTime($data['reference_date']) : $task->reference_date,
             isset($data['finished']) ? new \DateTime($data['finished']) : $task->finished,
             $data['status'] ?? $task->status,
             $task->created,
@@ -77,7 +77,7 @@ class TaskService
             throw new InvalidArgumentException('A descrição da tarefa deve ter no máximo 255 caracteres.');
         }
 
-        if ($updatedTask->started && $updatedTask->finished && $updatedTask->finished < $updatedTask->started) {
+        if ($updatedTask->reference_date && $updatedTask->finished && $updatedTask->finished < $updatedTask->reference_date) {
             throw new InvalidArgumentException('A data de término não pode ser anterior à data de início.');
         }
 
