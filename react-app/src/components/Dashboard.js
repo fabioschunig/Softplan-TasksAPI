@@ -67,7 +67,7 @@ const Dashboard = ({ user, onLogout }) => {
       <div className="dashboard-header">
         <h1>Softplan Tarefas</h1>
         <div className="user-info">
-          <span>Bem-vindo(a), {user?.username || 'Usuário'}! ({user?.role || 'user'})</span>
+          <span>Bem-vindo(a), {user?.username || 'Usuário'}!</span>
           <button onClick={toggleTheme} className="theme-toggle" title={isDarkTheme ? 'Alternar para tema claro' : 'Alternar para tema escuro'}>
             <div className="theme-toggle-slider">
               {isDarkTheme ? '🌙' : '☀️'}

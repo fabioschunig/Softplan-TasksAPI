@@ -621,11 +621,9 @@ html, body {
 }
 
 /* Filter Row Styles */
-.filter-row {
-  display: flex;
-  gap: 0.75rem;
-  align-items: center;
-  flex-wrap: nowrap;
+.filter-actions {
+    display: flex;
+    gap: 0.75rem;
 }
 
 .date-picker-input {
@@ -728,6 +726,16 @@ html, body {
 
 .react-datepicker-wrapper {
   width: 100%;
+}
+
+/* Override for date pickers inside the search form to prevent layout breakage */
+.search-form .react-datepicker-wrapper {
+  width: auto;
+  flex-shrink: 0;
+}
+
+.search-form .filter-actions {
+  flex-shrink: 0;
 }
 
 .react-datepicker__header {

@@ -188,7 +188,7 @@ const TaskManager = ({ initialAction, user }) => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return ' ';
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
@@ -325,7 +325,7 @@ const TaskManager = ({ initialAction, user }) => {
                   </div>
                    <div className={`task-status`}><strong className={`status-text-${getStatusText(task.status).toLowerCase().replace(' ', '-')}`}>Situação:</strong> {getStatusText(task.status)}</div>
                    <div className="task-project">
-                        <strong>Projeto:</strong> {projects.find(p => p.id === task.project_id)?.description || 'N/A'}
+                        <strong>Projeto:</strong> {projects.find(p => p.id === task.project_id)?.description || ' '}
                    </div>
                 </div>
                 <div className="project-actions">

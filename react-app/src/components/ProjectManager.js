@@ -162,7 +162,7 @@ const ProjectManager = ({ user }) => {
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return ' ';
     return new Date(dateString).toLocaleDateString('pt-BR', {
       year: 'numeric',
       month: '2-digit',

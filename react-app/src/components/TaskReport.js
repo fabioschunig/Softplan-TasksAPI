@@ -90,7 +90,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
 
     const getProjectName = (projectId) => {
     const project = projects.find(p => p.id === projectId);
-    return project ? project.description : 'N/A';
+    return project ? project.description : ' ';
   };
 
   const getStatusText = (status) => {
@@ -160,7 +160,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
 
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return ' ';
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
@@ -182,7 +182,6 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
       {error && <div className="error-message">{error}</div>}
 
       <form onSubmit={handleSearch} className="search-form">
-        <div className="filter-row">
           <input
             type="text"
             placeholder="Buscar tarefas..."
@@ -209,20 +208,21 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
             minDate={startDate}
             isClearable
           />
-          <button type="submit" className="search-button">Filtrar</button>
-          <button 
-            type="button" 
-            onClick={() => {
-              setSearchTerm('');
-              setStartDate(null);
-              setEndDate(null);
-              fetchTasks();
-            }}
-            className="clear-button"
-          >
-            Limpar
-          </button>
-        </div>
+          <div className="filter-actions">
+            <button type="submit" className="search-button">Filtrar</button>
+            <button 
+              type="button" 
+              onClick={() => {
+                setSearchTerm('');
+                setStartDate(null);
+                setEndDate(null);
+                fetchTasks();
+              }}
+              className="clear-button"
+            >
+              Limpar
+            </button>
+          </div>
       </form>
 
       <div className="report-table-container">
@@ -247,7 +247,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
                   <td>{task.description}</td>
                   <td>{getProjectName(task.project_id)}</td>
                   <td>{getStatusText(task.status)}</td>
-                  <td>{task.tags || 'N/A'}</td>
+                  <td>{task.tags || ' '}</td>
                   <td>{formatDate(task.reference_date)}</td>
                   <td>{formatDate(task.finished)}</td>
                   {user?.role === 'admin' && (
