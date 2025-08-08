@@ -1,11 +1,44 @@
-Options +FollowSymLinks
-IndexIgnore */*
+RewriteEngine On
 
-RewriteEngine on
+# Habilitar CORS para APIs
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
 
-# if a directory or a file exists, use it directly
+# Responder a requisições OPTIONS (preflight)
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# Servir arquivos estáticos do React diretamente
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ [NC]
+RewriteRule ^(.*)$ /app/$1 [L]
 
-# otherwise forward it to index.php
-RewriteRule . index.php
+# APIs - processar diretamente (não redirecionar)
+RewriteCond %{REQUEST_URI} \.api\.php$ [NC]
+RewriteRule ^(.*)$ - [L]
+
+# Para todas as outras rotas, usar index.php (que serve o React)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !\.api\.php$ [NC]
+RewriteRule ^(.*)$ /index.php [L]
+
+# Configurações de segurança
+<Files "*.env">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Configurações de cache para arquivos estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+</IfModule>
