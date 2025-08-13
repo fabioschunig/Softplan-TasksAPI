@@ -162,7 +162,7 @@ const UserManager = ({ token }) => {
                                 name="password"
                                 value={newUser.password}
                                 onChange={handleInputChange}
-                                placeholder="Digite a senha (mín. 8 caracteres, letras + números)"
+                                placeholder="Digite a senha (mín. 4 caracteres, letras + números)"
                                 required
                             />
                         </div>

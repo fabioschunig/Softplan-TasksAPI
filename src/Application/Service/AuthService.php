@@ -154,8 +154,8 @@ class AuthService
 
     private function isPasswordStrong(string $password): bool
     {
-        // Minimum 8 characters, at least one letter and one number
-        return strlen($password) >= 8 && 
+        // Minimum 4 characters, at least one letter and one number
+        return strlen($password) >= 4 && 
                preg_match('/[A-Za-z]/', $password) && 
                preg_match('/[0-9]/', $password);
     }
