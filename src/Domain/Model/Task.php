@@ -10,7 +10,6 @@ class Task implements \JsonSerializable
     public readonly int|null $projectId;
     public readonly \DateTime|null $reference_date;
     public readonly \DateTime|null $finished;
-    public readonly int $status;
     public readonly \DateTime|null $created;
     public readonly \DateTime|null $updated;
 
@@ -21,7 +20,6 @@ class Task implements \JsonSerializable
         int|null $projectId,
         \DateTime|null $reference_date,
         \DateTime|null $finished,
-        int $status,
         \DateTime|null $created,
         \DateTime|null $updated,
     ) {
@@ -31,7 +29,6 @@ class Task implements \JsonSerializable
         $this->projectId = $projectId;
         $this->reference_date = $reference_date;
         $this->finished = $finished;
-        $this->status = $status;
         $this->created = $created;
         $this->updated = $updated;
     }
@@ -45,7 +42,6 @@ class Task implements \JsonSerializable
             'project_id' => $this->projectId,
             'reference_date' => $this->reference_date?->format('Y-m-d H:i:s'),
             'finished' => $this->finished?->format('Y-m-d H:i:s'),
-            'status' => $this->status,
             'created' => $this->created?->format('Y-m-d H:i:s'),
             'updated' => $this->updated?->format('Y-m-d H:i:s'),
         ];

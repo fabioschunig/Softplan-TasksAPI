@@ -10,7 +10,7 @@ const TaskManager = ({ initialAction, user }) => {
   const [error, setError] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [formData, setFormData] = useState({ description: '', tags: '', project_id: '', status: 0, reference_date: null, finished: null });
+  const [formData, setFormData] = useState({ description: '', tags: '', project_id: '', reference_date: null, finished: null });
   const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
@@ -105,8 +105,7 @@ const TaskManager = ({ initialAction, user }) => {
         description: formData.description.trim(),
         tags: formData.tags.trim(),
         project_id: formData.project_id ? parseInt(formData.project_id, 10) : null,
-        status: parseInt(formData.status, 10),
-                reference_date: formData.reference_date ? formData.reference_date.toISOString().slice(0, 10) : null,
+        reference_date: formData.reference_date ? formData.reference_date.toISOString().slice(0, 10) : null,
         finished: formData.finished ? formData.finished.toISOString().slice(0, 10) : null
     };
 
@@ -152,23 +151,20 @@ const TaskManager = ({ initialAction, user }) => {
 
   const startEdit = (task) => {
     setEditingTask(task);
-            setEditingTask(task);
     setFormData({ 
         description: task.description, 
         tags: task.tags || '', 
         project_id: task.project_id || '',
-        status: task.status || 0,
         reference_date: task.reference_date ? new Date(task.reference_date) : null,
         finished: task.finished ? new Date(task.finished) : null
     });
     setShowCreateForm(false); // Hide create form if it was open
-    setEditingTask(task); // Ensure edit form is shown
   };
 
     const resetForm = (keepCreateFormOpen = false) => {
     setEditingTask(null);
     setShowCreateForm(keepCreateFormOpen);
-    setFormData({ description: '', tags: '', project_id: '', status: 0, reference_date: null, finished: null });
+    setFormData({ description: '', tags: '', project_id: '', reference_date: null, finished: null });
     setError('');
   };
 
@@ -178,14 +174,6 @@ const TaskManager = ({ initialAction, user }) => {
     fetchTasks();
   };
 
-    const getStatusText = (status) => {
-    switch (status) {
-      case 0: return 'Pendente';
-      case 1: return 'Em Andamento';
-      case 2: return 'Concluída';
-      default: return 'Desconhecido';
-    }
-  };
 
   const formatDate = (dateString) => {
     if (!dateString) return ' ';
@@ -229,18 +217,6 @@ const TaskManager = ({ initialAction, user }) => {
             {projects.map(p => (
                 <option key={p.id} value={p.id}>{p.description}</option>
             ))}
-        </select>
-      </div>
-      <div className="form-group">
-        <label htmlFor="status">Situação:</label>
-        <select 
-            id="status" 
-            value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-        >
-            <option value="0">Pendente</option>
-            <option value="1">Em Andamento</option>
-            <option value="2">Concluída</option>
         </select>
       </div>
             <div className="form-group">
@@ -323,7 +299,6 @@ const TaskManager = ({ initialAction, user }) => {
                     {task.reference_date && <div><strong>Data de Referência:</strong> {formatDate(task.reference_date)}</div>}
                     {task.finished && <div><strong>Finalizado:</strong> {formatDate(task.finished)}</div>}
                   </div>
-                   <div className={`task-status`}><strong className={`status-text-${getStatusText(task.status).toLowerCase().replace(' ', '-')}`}>Situação:</strong> {getStatusText(task.status)}</div>
                    <div className="task-project">
                         <strong>Projeto:</strong> {projects.find(p => p.id === task.project_id)?.description || ' '}
                    </div>

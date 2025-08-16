@@ -821,7 +821,7 @@ html, body {
 }
 
 /* Task Manager Specific Styles */
-.task-tags, .task-project, .task-status {
+.task-tags, .task-project {
   font-size: 0.85rem;
   color: var(--text-secondary);
   margin-top: 0.5rem;
@@ -836,28 +836,6 @@ html, body {
   display: inline-block;
   margin-top: 4px;
   color: var(--text-primary);
-}
-
-.task-status {
-  font-weight: 600;
-}
-
-.task-status .status-text-pending {
-  color: #ffa726;
-}
-
-.task-status .status-text-in-progress {
-  color: #4a9eff;
-}
-
-.task-status .status-text-completed {
-  color: #66bb6a;
-}
-
-.project-card .task-status {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-color);
 }
 
 /* Style for select dropdowns in forms */

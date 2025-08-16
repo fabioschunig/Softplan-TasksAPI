@@ -93,14 +93,6 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
     return project ? project.description : ' ';
   };
 
-  const getStatusText = (status) => {
-    switch (status) {
-      case 0: return 'Pendente';
-      case 1: return 'Em Andamento';
-      case 2: return 'Concluída';
-      default: return 'Desconhecido';
-    }
-  };
 
   const sortedTasks = React.useMemo(() => {
     let sortableItems = [...tasks];
@@ -114,10 +106,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
           aValue = getProjectName(a.project_id);
           bValue = getProjectName(b.project_id);
         }
-        if (sortConfig.key === 'status') {
-            aValue = getStatusText(a.status);
-            bValue = getStatusText(b.status);
-        } else if (sortConfig.key === 'reference_date' || sortConfig.key === 'finished') {
+        if (sortConfig.key === 'reference_date' || sortConfig.key === 'finished') {
             // Handle null dates based on sort direction
             if (!aValue && !bValue) return 0;
             if (!aValue) return sortConfig.direction === 'descending' ? 1 : -1;
@@ -232,7 +221,6 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
               <th onClick={() => requestSort('id')}>ID{getSortIndicator('id')}</th>
               <th onClick={() => requestSort('description')}>Descrição{getSortIndicator('description')}</th>
               <th onClick={() => requestSort('project_id')}>Projeto{getSortIndicator('project_id')}</th>
-              <th onClick={() => requestSort('status')}>Situação{getSortIndicator('status')}</th>
               <th onClick={() => requestSort('tags')}>Etiquetas{getSortIndicator('tags')}</th>
               <th onClick={() => requestSort('reference_date')}>Data de Referência{getSortIndicator('reference_date')}</th>
               <th onClick={() => requestSort('finished')}>Data de Fim{getSortIndicator('finished')}</th>
@@ -246,7 +234,6 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
                   <td>{task.id}</td>
                   <td>{task.description}</td>
                   <td>{getProjectName(task.project_id)}</td>
-                  <td>{getStatusText(task.status)}</td>
                   <td>{task.tags || ' '}</td>
                   <td>{formatDate(task.reference_date)}</td>
                   <td>{formatDate(task.finished)}</td>
@@ -260,7 +247,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
               ))
             ) : (
               <tr>
-                <td colSpan={user?.role === 'admin' ? "8" : "7"} className="no-results">Nenhuma tarefa encontrada.</td>
+                <td colSpan={user?.role === 'admin' ? "7" : "6"} className="no-results">Nenhuma tarefa encontrada.</td>
               </tr>
             )}
           </tbody>

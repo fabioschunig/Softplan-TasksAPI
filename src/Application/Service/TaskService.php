@@ -45,7 +45,6 @@ class TaskService
             $data['project_id'] ?? null,
             $reference_date,
             $finished,
-            $data['status'] ?? 0,
             null, // created
             null // updated
         );
@@ -68,7 +67,6 @@ class TaskService
             $data['project_id'] ?? $task->projectId,
             isset($data['reference_date']) ? new \DateTime($data['reference_date']) : $task->reference_date,
             isset($data['finished']) ? new \DateTime($data['finished']) : $task->finished,
-            $data['status'] ?? $task->status,
             $task->created,
             new \DateTime() // updated
         );
