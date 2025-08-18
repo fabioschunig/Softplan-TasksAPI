@@ -87,10 +87,10 @@ class TaskService
         return $this->taskRepository->delete($id);
     }
 
-    public function searchTasks(string $searchText = null, string $startDate = null, string $endDate = null): array
+    public function searchTasks(string $searchText = null, string $startDate = null, string $endDate = null, string $statusFilter = null): array
     {
         $startDateTime = $startDate ? new \DateTime($startDate) : null;
         $endDateTime = $endDate ? new \DateTime($endDate) : null;
-        return $this->taskRepository->searchTasks($searchText, $startDateTime, $endDateTime);
+        return $this->taskRepository->searchTasks($searchText, $startDateTime, $endDateTime, $statusFilter);
     }
 }

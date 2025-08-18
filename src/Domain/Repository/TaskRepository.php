@@ -8,7 +8,8 @@ interface TaskRepository
     public function searchTasks(
         string|null $searchText,
         \DateTime|null $startDate,
-        \DateTime|null $endDate
+        \DateTime|null $endDate,
+        string|null $statusFilter = null
     ): array;
 
     public function findById(int $id): ?\SoftplanTasksApi\Domain\Model\Task;

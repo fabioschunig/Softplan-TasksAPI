@@ -196,7 +196,8 @@ try {
                 $searchText = $_GET['search'] ?? null;
                 $startDate = $_GET['start_date'] ?? null;
                 $endDate = $_GET['end_date'] ?? null;
-                $tasks = $taskService->searchTasks($searchText, $startDate, $endDate);
+                $statusFilter = $_GET['status_filter'] ?? null;
+                $tasks = $taskService->searchTasks($searchText, $startDate, $endDate, $statusFilter);
                 sendSuccess($tasks);
             }
             break;

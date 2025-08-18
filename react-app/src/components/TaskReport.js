@@ -12,6 +12,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('all');
   const [sortConfig, setSortConfig] = useState({ key: 'finished', direction: 'descending' });
 
   useEffect(() => {
@@ -33,6 +34,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
       if (searchTerm) params.append('search', searchTerm);
       if (startDate) params.append('start_date', startDate.toISOString().split('T')[0]);
       if (endDate) params.append('end_date', endDate.toISOString().split('T')[0]);
+      if (statusFilter && statusFilter !== 'all') params.append('status_filter', statusFilter);
       
       const url = params.toString() 
         ? `${API_URLS.TASKS}?${params.toString()}`
@@ -197,6 +199,16 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
             minDate={startDate}
             isClearable
           />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="status-filter-select"
+            title="Filtrar tarefas por status de abertura/fechamento"
+          >
+            <option value="all">Todas</option>
+            <option value="open">Abertas</option>
+            <option value="closed">Fechadas</option>
+          </select>
           <div className="filter-actions">
             <button type="submit" className="search-button">Filtrar</button>
             <button 
@@ -205,6 +217,7 @@ const TaskReport = ({ onNewTask, onEditTask, user }) => {
                 setSearchTerm('');
                 setStartDate(null);
                 setEndDate(null);
+                setStatusFilter('all');
                 fetchTasks();
               }}
               className="clear-button"

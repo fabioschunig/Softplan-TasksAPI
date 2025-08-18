@@ -24,7 +24,8 @@ class PdoTaskRepository implements TaskRepository
     public function searchTasks(
         string|null $searchText,
         DateTime|null $startDate,
-        DateTime|null $endDate
+        DateTime|null $endDate,
+        string|null $statusFilter = null
     ): array {
         $sqlQuery = "SELECT t.* FROM task t LEFT JOIN project p ON t.project_id = p.id WHERE 1=1";
 
@@ -39,6 +40,14 @@ class PdoTaskRepository implements TaskRepository
         } elseif ($endDate) {
             $sqlQuery .= " AND t.reference_date <= :endDate";
         }
+
+        // Add status filter based on finished field
+        if ($statusFilter === 'open') {
+            $sqlQuery .= " AND t.finished IS NULL";
+        } elseif ($statusFilter === 'closed') {
+            $sqlQuery .= " AND t.finished IS NOT NULL";
+        }
+        // If $statusFilter is 'all' or null, no additional filter is applied
 
         // Add default ordering by finished date descending (NULL values last)
         $sqlQuery .= " ORDER BY t.finished DESC, t.id DESC";
